@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout — Alfapro Ecuador</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #9BC42A;
+      --bg: #0a0a0a;
+      --card: #141414;
+      --card2: #1a1a1a;
+      --card-border: rgba(255,255,255,0.07);
+      --white: #f5f5f5;
+      --muted: rgba(255,255,255,0.45);
+      --error: #ff5252;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter Tight', sans-serif; background: var(--bg); color: var(--white); min-height: 100vh; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      height: 64px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px;
+      background: rgba(10,10,10,0.95);
+      border-bottom: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+    }
+    .nav-logo { text-decoration: none; display: flex; align-items: center; }
+    .nav-logo img { height: 40px; width: auto; }
+    .nav-secure { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+    .nav-secure span { color: var(--green); }
+
+    /* PROGRESS STEPS */
+    .checkout-progress {
+      display: flex; justify-content: center; align-items: center;
+      gap: 0; padding: 32px 48px 0;
+    }
+    .step {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; font-weight: 700; color: var(--muted);
+      transition: color 0.3s;
+    }
+    .step.active { color: var(--white); }
+    .step.done { color: var(--green); }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid var(--card-border);
+      font-size: 12px; font-weight: 800;
+      transition: all 0.3s;
+    }
+    .step.active .step-num { border-color: var(--green); background: rgba(155,196,42,0.15); color: var(--green); }
+    .step.done .step-num { border-color: var(--green); background: var(--green); color: #0a0a0a; }
+    .step-line { width: 60px; height: 1px; background: var(--card-border); margin: 0 12px; }
+    .step-line.done { background: var(--green); }
+
+    /* MAIN LAYOUT */
+    .checkout-layout {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 40px;
+      max-width: 1100px;
+      margin: 40px auto 80px;
+      padding: 0 48px;
+      align-items: start;
+    }
+
+    /* FORM AREA */
+    .form-area { display: flex; flex-direction: column; gap: 0; }
+
+    .form-step { display: none; flex-direction: column; gap: 28px; }
+    .form-step.active { display: flex; }
+
+    .step-title {
+      font-size: 28px; font-weight: 800; letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+    .step-subtitle { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-grid.one { grid-template-columns: 1fr; }
+
+    .field { display: flex; flex-direction: column; gap: 7px; }
+    .field-label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .field input, .field select {
+      padding: 14px 16px; border-radius: 10px;
+      background: var(--card2); border: 1px solid var(--card-border);
+      color: var(--white); font-size: 14px; font-family: 'Inter Tight', sans-serif;
+      outline: none; transition: border-color 0.2s;
+    }
+    .field input:focus, .field select:focus { border-color: var(--green); }
+    .field input::placeholder { color: rgba(255,255,255,0.2); }
+    .field select option { background: #1a1a1a; }
+
+    /* PAYMENT METHODS */
+    .payment-methods { display: flex; flex-direction: column; gap: 12px; }
+    .payment-option {
+      display: flex; align-items: center; gap: 16px;
+      padding: 16px 20px; border-radius: 12px;
+      border: 2px solid var(--card-border);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .payment-option:hover { border-color: rgba(155,196,42,0.4); }
+    .payment-option.selected { border-color: var(--green); background: rgba(155,196,42,0.06); }
+    .payment-radio {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2px solid var(--card-border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.2s;
+    }
+    .payment-option.selected .payment-radio { border-color: var(--green); background: var(--green); }
+    .payment-option.selected .payment-radio::after {
+      content: ''; width: 6px; height: 6px; border-radius: 50%; background: #0a0a0a;
+    }
+    .payment-icon { font-size: 24px; }
+    .payment-name { font-size: 14px; font-weight: 700; }
+    .payment-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* CARD FORM */
+    .card-form-wrapper {
+      padding: 20px; border-radius: 12px;
+      background: var(--card2); border: 1px solid var(--card-border);
+      display: none;
+    }
+    .card-form-wrapper.visible { display: block; }
+    .card-number-input {
+      position: relative;
+    }
+    .card-number-input input { padding-right: 100px; }
+    .card-brands { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); display: flex; gap: 6px; font-size: 18px; }
+
+    /* NAV BUTTONS */
+    .form-nav { display: flex; gap: 12px; margin-top: 8px; }
+    .btn-back {
+      padding: 14px 28px; border-radius: 10px;
+      background: transparent; border: 1px solid var(--card-border);
+      color: var(--white); font-size: 14px; font-weight: 700;
+      cursor: pointer; font-family: 'Inter Tight', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-back:hover { border-color: rgba(255,255,255,0.3); }
+    .btn-next {
+      flex: 1; padding: 16px 32px; border-radius: 10px;
+      background: var(--green); color: #0a0a0a;
+      font-size: 15px; font-weight: 800;
+      border: none; cursor: pointer; font-family: 'Inter Tight', sans-serif;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-next:hover { background: #b8e03a; transform: scale(1.01); }
+    .btn-next:active { transform: scale(0.99); }
+
+    /* SUCCESS STATE */
+    .success-screen {
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; gap: 24px; padding: 60px 40px;
+    }
+    .success-screen.active { display: flex; }
+    .success-icon {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: rgba(155,196,42,0.15); border: 2px solid var(--green);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
+      animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .success-title { font-size: 36px; font-weight: 800; letter-spacing: -0.03em; }
+    .success-title span { color: var(--green); }
+    .success-sub { font-size: 15px; color: var(--muted); line-height: 1.7; max-width: 420px; }
+    .success-order {
+      padding: 16px 28px; border-radius: 10px;
+      background: var(--card); border: 1px solid var(--card-border);
+      font-size: 14px; color: var(--muted);
+    }
+    .success-order strong { color: var(--green); font-size: 16px; }
+    .success-actions { display: flex; gap: 12px; }
+    .btn-home {
+      padding: 14px 32px; border-radius: 10px;
+      background: var(--green); color: #0a0a0a;
+      font-size: 14px; font-weight: 800; text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-home:hover { background: #b8e03a; }
+    .btn-whatsapp {
+      padding: 14px 28px; border-radius: 10px;
+      background: #25D366; color: #fff;
+      font-size: 14px; font-weight: 800; text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-whatsapp:hover { background: #1ebe5c; }
+
+    /* ORDER SUMMARY */
+    .order-summary {
+      position: sticky; top: 80px;
+      border-radius: 20px;
+      background: var(--card); border: 1px solid var(--card-border);
+      overflow: hidden;
+    }
+    .summary-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--card-border);
+      font-size: 14px; font-weight: 800; letter-spacing: 0.04em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .summary-product {
+      display: flex; gap: 16px; align-items: center;
+      padding: 20px 24px; border-bottom: 1px solid var(--card-border);
+    }
+    .summary-product-img {
+      width: 72px; height: 72px; border-radius: 10px; overflow: hidden;
+      flex-shrink: 0; border: 1px solid var(--card-border);
+    }
+    .summary-product-img img { width: 100%; height: 100%; object-fit: cover; }
+    .summary-product-name { font-size: 14px; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+    .summary-product-cat { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+    .summary-product-price { font-size: 18px; font-weight: 800; color: var(--green); margin-top: 6px; }
+
+    .summary-lines { padding: 16px 24px; border-bottom: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 10px; }
+    .summary-line { display: flex; justify-content: space-between; font-size: 13px; }
+    .summary-line .lbl { color: var(--muted); }
+    .summary-line .val { font-weight: 600; }
+    .summary-line.total { font-size: 16px; padding-top: 10px; border-top: 1px solid var(--card-border); margin-top: 6px; }
+    .summary-line.total .lbl { font-weight: 800; color: var(--white); }
+    .summary-line.total .val { color: var(--green); font-size: 22px; font-weight: 800; }
+
+    .summary-trust { padding: 16px 24px; display: flex; flex-direction: column; gap: 8px; }
+    .trust-line { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); }
+    .trust-line span:first-child { font-size: 16px; }
+
+    .coupon-row { padding: 16px 24px; border-top: 1px solid var(--card-border); display: flex; gap: 8px; }
+    .coupon-input {
+      flex: 1; padding: 10px 14px; border-radius: 8px;
+      background: var(--card2); border: 1px solid var(--card-border);
+      color: var(--white); font-size: 13px; font-family: 'Inter Tight', sans-serif; outline: none;
+    }
+    .coupon-input:focus { border-color: var(--green); }
+    .coupon-btn {
+      padding: 10px 16px; border-radius: 8px;
+      background: transparent; border: 1px solid var(--green);
+      color: var(--green); font-size: 12px; font-weight: 700;
+      cursor: pointer; font-family: 'Inter Tight', sans-serif;
+    }
+
+    @media (max-width: 800px) {
+      nav { padding: 0 20px; }
+      .checkout-progress { padding: 24px 20px 0; gap: 0; }
+      .step-line { width: 24px; }
+      .checkout-layout { grid-template-columns: 1fr; padding: 0 20px; }
+      .order-summary { position: static; order: -1; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo"><img src="logo.png" alt="Alfapro" /></a>
+  <div class="nav-secure">🔒 <span>Pago 100% seguro</span> — SSL Encriptado</div>
+</nav>
+
+<!-- PROGRESS -->
+<div class="checkout-progress" id="progressBar">
+  <div class="step active" id="step-ind-1">
+    <div class="step-num">1</div>
+    <span>Datos</span>
+  </div>
+  <div class="step-line" id="line-1-2"></div>
+  <div class="step" id="step-ind-2">
+    <div class="step-num">2</div>
+    <span>Envío</span>
+  </div>
+  <div class="step-line" id="line-2-3"></div>
+  <div class="step" id="step-ind-3">
+    <div class="step-num">3</div>
+    <span>Pago</span>
+  </div>
+  <div class="step-line" id="line-3-4"></div>
+  <div class="step" id="step-ind-4">
+    <div class="step-num">4</div>
+    <span>Confirmar</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="checkout-layout">
+
+  <!-- FORM AREA -->
+  <div class="form-area">
+
+    <!-- STEP 1: Datos personales -->
+    <div class="form-step active" id="formStep1">
+      <div>
+        <h2 class="step-title">Tus datos</h2>
+        <p class="step-subtitle">Usamos esta información solo para procesar tu pedido y mantenerte informado.</p>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label class="field-label">Nombre</label>
+          <input type="text" id="fname" placeholder="Juan Carlos" />
+        </div>
+        <div class="field">
+          <label class="field-label">Apellido</label>
+          <input type="text" id="lname" placeholder="Rodríguez" />
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label class="field-label">Correo electrónico</label>
+          <input type="email" id="email" placeholder="juan@ejemplo.com" />
+        </div>
+        <div class="field">
+          <label class="field-label">Teléfono / WhatsApp</label>
+          <input type="tel" id="phone" placeholder="0991234567" />
+        </div>
+      </div>
+      <div class="form-grid one">
+        <div class="field">
+          <label class="field-label">Cédula (para factura)</label>
+          <input type="text" id="cedula" placeholder="1234567890" />
+        </div>
+      </div>
+      <div class="form-nav">
+        <button class="btn-next" onclick="goStep(2)">Continuar → Envío</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Dirección de envío -->
+    <div class="form-step" id="formStep2">
+      <div>
+        <h2 class="step-title">Dirección de envío</h2>
+        <p class="step-subtitle">Realizamos envíos a todo el Ecuador. Tiempo estimado: 24–72 horas hábiles.</p>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label class="field-label">Provincia</label>
+          <select id="provincia">
+            <option value="">Seleccionar...</option>
+            <option>Guayas</option>
+            <option>Pichincha</option>
+            <option>Manabí</option>
+            <option>Los Ríos</option>
+            <option>El Oro</option>
+            <option>Azuay</option>
+            <option>Tungurahua</option>
+            <option>Loja</option>
+            <option>Imbabura</option>
+            <option>Chimborazo</option>
+            <option>Cotopaxi</option>
+            <option>Esmeraldas</option>
+            <option>Santo Domingo TSáchilas</option>
+            <option>Santa Elena</option>
+            <option>Otra provincia</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Ciudad</label>
+          <input type="text" id="ciudad" placeholder="Ej: Quevedo" />
+        </div>
+      </div>
+      <div class="form-grid one">
+        <div class="field">
+          <label class="field-label">Dirección completa</label>
+          <input type="text" id="direccion" placeholder="Calle principal, número, sector..." />
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label class="field-label">Referencia</label>
+          <input type="text" id="referencia" placeholder="Cerca a, frente a..." />
+        </div>
+        <div class="field">
+          <label class="field-label">Código Postal (opcional)</label>
+          <input type="text" id="postal" placeholder="EC010001" />
+        </div>
+      </div>
+
+      <!-- SHIPPING OPTIONS -->
+      <div>
+        <div class="field-label" style="margin-bottom:12px;">Método de envío</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="payment-option selected" onclick="selectShipping(this)">
+            <div class="payment-radio"></div>
+            <div class="payment-icon">🚚</div>
+            <div>
+              <div class="payment-name">Servientrega / Correos del Ecuador</div>
+              <div class="payment-desc">48–72 horas hábiles a nivel nacional · Costo: $4.99</div>
+            </div>
+            <div style="margin-left:auto;color:var(--green);font-weight:800;font-size:14px;">$4.99</div>
+          </div>
+          <div class="payment-option" onclick="selectShipping(this)">
+            <div class="payment-radio"></div>
+            <div class="payment-icon">⚡</div>
+            <div>
+              <div class="payment-name">Envío Express (Guayaquil / Quito)</div>
+              <div class="payment-desc">24 horas hábiles · Solo ciudades principales</div>
+            </div>
+            <div style="margin-left:auto;color:var(--green);font-weight:800;font-size:14px;">$8.99</div>
+          </div>
+          <div class="payment-option" onclick="selectShipping(this)">
+            <div class="payment-radio"></div>
+            <div class="payment-icon">🏪</div>
+            <div>
+              <div class="payment-name">Retiro en tienda (Quevedo)</div>
+              <div class="payment-desc">Lunes a sábado · Av. Quito y Colorados, Quevedo</div>
+            </div>
+            <div style="margin-left:auto;color:var(--green);font-weight:800;font-size:14px;">Gratis</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-nav">
+        <button class="btn-back" onclick="goStep(1)">← Atrás</button>
+        <button class="btn-next" onclick="goStep(3)">Continuar → Pago</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Método de pago -->
+    <div class="form-step" id="formStep3">
+      <div>
+        <h2 class="step-title">Método de pago</h2>
+        <p class="step-subtitle">Elige cómo quieres pagar. Tu información financiera nunca se almacena en nuestros servidores.</p>
+      </div>
+
+      <div class="payment-methods">
+        <div class="payment-option selected" onclick="selectPayment(this, 'card')">
+          <div class="payment-radio"></div>
+          <div class="payment-icon">💳</div>
+          <div>
+            <div class="payment-name">Tarjeta de crédito / débito</div>
+            <div class="payment-desc">Visa, Mastercard, Diners, American Express</div>
+          </div>
+        </div>
+
+        <div class="payment-option" onclick="selectPayment(this, 'transfer')">
+          <div class="payment-radio"></div>
+          <div class="payment-icon">🏦</div>
+          <div>
+            <div class="payment-name">Transferencia bancaria</div>
+            <div class="payment-desc">Banco Pichincha, Banco del Pacífico, Produbanco</div>
+          </div>
+        </div>
+
+        <div class="payment-option" onclick="selectPayment(this, 'whatsapp')">
+          <div class="payment-radio"></div>
+          <div class="payment-icon">💬</div>
+          <div>
+            <div class="payment-name">Pagar por WhatsApp</div>
+            <div class="payment-desc">Envíanos tu pedido y coordinamos el pago directamente</div>
+          </div>
+        </div>
+
+        <div class="payment-option" onclick="selectPayment(this, 'store')">
+          <div class="payment-radio"></div>
+          <div class="payment-icon">🏪</div>
+          <div>
+            <div class="payment-name">Pago en tienda</div>
+            <div class="payment-desc">Efectivo o tarjeta · Quevedo, Babahoyo, Quinsaloma</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card form -->
+      <div class="card-form-wrapper visible" id="cardForm">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="field">
+            <label class="field-label">Nombre en la tarjeta</label>
+            <input type="text" placeholder="JUAN CARLOS RODRIGUEZ" style="text-transform:uppercase;" />
+          </div>
+          <div class="field card-number-input">
+            <label class="field-label">Número de tarjeta</label>
+            <input type="text" id="cardNum" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCard(this)" />
+            <div class="card-brands">💳</div>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label class="field-label">Vencimiento</label>
+              <input type="text" placeholder="MM/AA" maxlength="5" oninput="formatExp(this)" />
+            </div>
+            <div class="field">
+              <label class="field-label">CVV</label>
+              <input type="text" placeholder="123" maxlength="4" />
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);padding-top:4px;">
+            🔒 Datos encriptados con SSL 256-bit — nunca almacenamos tu tarjeta
+          </div>
+        </div>
+      </div>
+
+      <!-- Transfer info -->
+      <div class="card-form-wrapper" id="transferForm">
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="font-size:13px;font-weight:700;margin-bottom:4px;">Datos para transferencia:</div>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:rgba(255,255,255,0.75);">
+            <div>🏦 <strong>Banco Pichincha</strong> · Cta. Corriente: <strong style="color:var(--green);">2200XXXXXXX</strong></div>
+            <div>🏦 <strong>Banco del Pacífico</strong> · Cta. Ahorros: <strong style="color:var(--green);">7400XXXXXXX</strong></div>
+            <div>👤 Beneficiario: <strong>ALFAPRO S.A.</strong></div>
+            <div>📧 Enviar comprobante a: <strong style="color:var(--green);">pedidos@alfapro.ec</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-nav">
+        <button class="btn-back" onclick="goStep(2)">← Atrás</button>
+        <button class="btn-next" onclick="goStep(4)">Continuar → Confirmar</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: Confirmación -->
+    <div class="form-step" id="formStep4">
+      <div>
+        <h2 class="step-title">Confirmar pedido</h2>
+        <p class="step-subtitle">Revisa los detalles antes de confirmar. Al hacer clic en "Confirmar Pedido" aceptas nuestros términos.</p>
+      </div>
+
+      <!-- Resumen datos -->
+      <div style="padding:20px;border-radius:12px;background:var(--card2);border:1px solid var(--card-border);display:flex;flex-direction:column;gap:12px;">
+        <div style="font-size:12px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);">Resumen del pedido</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Producto</span><span id="confirmProd" style="font-weight:700;text-align:right;max-width:60%;">—</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Envío</span><span style="font-weight:600;" id="confirmShip">$4.99</span></div>
+          <div style="height:1px;background:var(--card-border);margin:4px 0;"></div>
+          <div style="display:flex;justify-content:space-between;font-size:16px;"><span style="font-weight:800;">Total</span><span style="color:var(--green);font-weight:800;font-size:20px;" id="confirmTotal">$0.00</span></div>
+        </div>
+      </div>
+
+      <div style="padding:16px 20px;border-radius:12px;background:rgba(155,196,42,0.06);border:1px solid rgba(155,196,42,0.2);display:flex;gap:12px;align-items:flex-start;">
+        <span style="font-size:20px;flex-shrink:0;">ℹ️</span>
+        <p style="font-size:13px;color:rgba(255,255,255,0.7);line-height:1.6;">Al confirmar, recibirás un <strong>correo de confirmación</strong> y un mensaje de <strong>WhatsApp</strong> con el número de seguimiento de tu pedido en las próximas 2 horas.</p>
+      </div>
+
+      <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--muted);">
+        <input type="checkbox" id="terms" style="margin-top:2px;accent-color:var(--green);" />
+        <label for="terms">Acepto los <a href="#" style="color:var(--green);">Términos y Condiciones</a> y la <a href="#" style="color:var(--green);">Política de Devoluciones</a> de Alfapro Ecuador.</label>
+      </div>
+
+      <div class="form-nav">
+        <button class="btn-back" onclick="goStep(3)">← Atrás</button>
+        <button class="btn-next" id="confirmBtn" onclick="placeOrder()" style="background:var(--green);">
+          ✅ Confirmar Pedido
+        </button>
+      </div>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">✅</div>
+      <div>
+        <h2 class="success-title">¡Pedido <span>confirmado!</span></h2>
+      </div>
+      <p class="success-sub">Tu pedido ha sido recibido. En los próximos <strong>30 minutos</strong> recibirás un correo con los detalles y número de seguimiento.</p>
+      <div class="success-order">
+        Número de pedido: <strong id="orderNumber">#ALF-001</strong>
+      </div>
+      <p style="font-size:13px;color:var(--muted);">¿Tienes dudas? Escríbenos directo por WhatsApp 👇</p>
+      <div class="success-actions">
+        <a href="index.html" class="btn-home">← Seguir comprando</a>
+        <a href="https://wa.me/593XXXXXXXXX?text=Hola%2C+mi+pedido+es+" id="waLink" class="btn-whatsapp" target="_blank">💬 WhatsApp</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ORDER SUMMARY SIDEBAR -->
+  <div class="order-summary">
+    <div class="summary-header">📦 Tu pedido</div>
+
+    <div class="summary-product">
+      <div class="summary-product-img">
+        <img id="summaryImg" src="https://images.unsplash.com/photo-1571819507488-0e1dfe7cc22d?w=200&q=80" alt="Producto" />
+      </div>
+      <div>
+        <div class="summary-product-name" id="summaryName">Producto seleccionado</div>
+        <div class="summary-product-cat" id="summaryCat">Categoría</div>
+        <div class="summary-product-price" id="summaryPrice">$0.00</div>
+      </div>
+    </div>
+
+    <div class="summary-lines">
+      <div class="summary-line">
+        <span class="lbl">Subtotal</span>
+        <span class="val" id="subTotal">$0.00</span>
+      </div>
+      <div class="summary-line">
+        <span class="lbl">Envío</span>
+        <span class="val" id="shippingCost">$4.99</span>
+      </div>
+      <div class="summary-line">
+        <span class="lbl">Descuento</span>
+        <span class="val" style="color:var(--green);" id="discountLine">−$0.00</span>
+      </div>
+      <div class="summary-line total">
+        <span class="lbl">Total a pagar</span>
+        <span class="val" id="totalAmount">$0.00</span>
+      </div>
+    </div>
+
+    <div class="coupon-row">
+      <input class="coupon-input" type="text" id="couponInput" placeholder="Código de descuento" />
+      <button class="coupon-btn" onclick="applyCoupon()">Aplicar</button>
+    </div>
+
+    <div class="summary-trust">
+      <div class="trust-line"><span>🔒</span><span>Pago 100% seguro · SSL</span></div>
+      <div class="trust-line"><span>🚚</span><span>Envío a todo Ecuador</span></div>
+      <div class="trust-line"><span>↩️</span><span>Devolución gratuita 30 días</span></div>
+      <div class="trust-line"><span>📞</span><span>Soporte 24/7 por WhatsApp</span></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Parse URL params
+  const params = new URLSearchParams(window.location.search);
+  const precio = parseFloat(params.get('precio') || '0');
+  const nombre = decodeURIComponent(params.get('nombre') || 'Producto Alfapro');
+  const img = params.get('img') || '1571819507488-0e1dfe7cc22d';
+  const cat = decodeURIComponent(params.get('cat') || 'Accesorio');
+  let shipping = 4.99;
+  let discount = 0;
+
+  function updateSummary() {
+    const total = precio + shipping - discount;
+    document.getElementById('summaryName').textContent = nombre;
+    document.getElementById('summaryCat').textContent = cat;
+    document.getElementById('summaryPrice').textContent = '$' + precio.toFixed(2);
+    document.getElementById('summaryImg').src = 'https://images.unsplash.com/photo-' + img + '?w=200&q=80';
+    document.getElementById('subTotal').textContent = '$' + precio.toFixed(2);
+    document.getElementById('shippingCost').textContent = shipping === 0 ? 'Gratis' : '$' + shipping.toFixed(2);
+    document.getElementById('discountLine').textContent = '−$' + discount.toFixed(2);
+    document.getElementById('totalAmount').textContent = '$' + total.toFixed(2);
+    document.getElementById('confirmProd').textContent = nombre;
+    document.getElementById('confirmShip').textContent = shipping === 0 ? 'Gratis' : '$' + shipping.toFixed(2);
+    document.getElementById('confirmTotal').textContent = '$' + total.toFixed(2);
+  }
+  updateSummary();
+
+  let currentStep = 1;
+
+  function goStep(n) {
+    // Hide current
+    document.getElementById('formStep' + currentStep).classList.remove('active');
+    // Update progress indicators
+    for (let i = 1; i <= 4; i++) {
+      const el = document.getElementById('step-ind-' + i);
+      el.classList.remove('active', 'done');
+      if (i < n) el.classList.add('done');
+      else if (i === n) el.classList.add('active');
+    }
+    for (let i = 1; i <= 3; i++) {
+      const line = document.getElementById('line-' + i + '-' + (i+1));
+      if (line) line.classList.toggle('done', i < n);
+    }
+    currentStep = n;
+    document.getElementById('formStep' + n).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function selectPayment(el, type) {
+    document.querySelectorAll('.payment-methods .payment-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('cardForm').classList.toggle('visible', type === 'card');
+    document.getElementById('transferForm').classList.toggle('visible', type === 'transfer');
+  }
+
+  function selectShipping(el) {
+    document.querySelectorAll('#formStep2 .payment-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    const val = el.querySelector('[style*="color:var(--green)"]')?.textContent?.trim();
+    shipping = val === 'Gratis' ? 0 : parseFloat(val?.replace('$','') || 4.99);
+    updateSummary();
+  }
+
+  function formatCard(el) {
+    let v = el.value.replace(/\D/g, '').slice(0, 16);
+    el.value = v.match(/.{1,4}/g)?.join(' ') || v;
+  }
+
+  function formatExp(el) {
+    let v = el.value.replace(/\D/g, '').slice(0, 4);
+    if (v.length >= 3) v = v.slice(0,2) + '/' + v.slice(2);
+    el.value = v;
+  }
+
+  function applyCoupon() {
+    const code = document.getElementById('couponInput').value.trim().toUpperCase();
+    if (code === 'ALFAPRO10') {
+      discount = Math.round(precio * 0.10 * 100) / 100;
+      document.getElementById('couponInput').style.borderColor = 'var(--green)';
+      updateSummary();
+      alert('✅ Cupón aplicado: 10% de descuento');
+    } else if (code === 'MOTO2024') {
+      discount = 5;
+      document.getElementById('couponInput').style.borderColor = 'var(--green)';
+      updateSummary();
+      alert('✅ Cupón aplicado: $5 de descuento');
+    } else {
+      document.getElementById('couponInput').style.borderColor = '#ff5252';
+      alert('❌ Código no válido');
+    }
+  }
+
+  function placeOrder() {
+    if (!document.getElementById('terms').checked) {
+      alert('Por favor acepta los términos y condiciones para continuar.');
+      return;
+    }
+    const btn = document.getElementById('confirmBtn');
+    btn.textContent = '⏳ Procesando...';
+    btn.disabled = true;
+    setTimeout(() => {
+      // Hide form, show success
+      document.getElementById('formStep4').classList.remove('active');
+      document.getElementById('successScreen').classList.add('active');
+      // Update progress — all done
+      for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById('step-ind-' + i);
+        el.classList.remove('active');
+        el.classList.add('done');
+      }
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById('line-' + i + '-' + (i+1))?.classList.add('done');
+      }
+      // Random order number
+      const num = Math.floor(Math.random() * 9000) + 1000;
+      const orderNum = '#ALF-' + num;
+      document.getElementById('orderNumber').textContent = orderNum;
+      document.getElementById('waLink').href = 'https://wa.me/593XXXXXXXXX?text=Hola,%20mi%20pedido%20es%20' + orderNum + '%20:%20' + encodeURIComponent(nombre);
+      localStorage.setItem('alfapro_cart', '0');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 1800);
+  }
+</script>
+</body>
+</html>
