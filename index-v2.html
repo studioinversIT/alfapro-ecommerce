@@ -40,9 +40,33 @@
     .reveal.visible { opacity:1; transform:translateY(0); }
     .rd1{transition-delay:.12s} .rd2{transition-delay:.24s} .rd3{transition-delay:.36s} .rd4{transition-delay:.48s}
 
+    /* ── ANNOUNCEMENT BAR ── */
+    .announce-bar {
+      position:fixed; top:0; left:0; right:0; z-index:400;
+      background:var(--accent); height:40px;
+      display:flex; align-items:center; overflow:hidden;
+    }
+    .announce-track {
+      display:flex; align-items:center; gap:20px;
+      white-space:nowrap; animation:marquee 32s linear infinite;
+      padding:0 40px;
+    }
+    .announce-item {
+      display:inline-flex; align-items:center; gap:7px;
+      font-size:12px; font-weight:700; letter-spacing:.04em; color:#000;
+    }
+    .announce-sep { color:rgba(0,0,0,.3); font-size:10px; }
+    .announce-close {
+      position:absolute; right:12px; top:50%; transform:translateY(-50%);
+      background:rgba(0,0,0,.15); border:none; cursor:pointer; border-radius:50%;
+      width:22px; height:22px; display:flex; align-items:center; justify-content:center;
+      color:#000; flex-shrink:0; z-index:2;
+    }
+    .announce-close:hover { background:rgba(0,0,0,.28); }
+
     /* ── NAV ── */
     nav {
-      position:fixed; top:0; left:0; right:0; z-index:300;
+      position:fixed; top:40px; left:0; right:0; z-index:300;
       height:68px; display:flex; align-items:center; justify-content:space-between;
       padding:0 var(--pad);
       background:rgba(0,0,0,0.9); backdrop-filter:blur(20px);
@@ -426,6 +450,241 @@
       font-size:11px; font-weight:700; color:var(--accent); letter-spacing:.06em;
     }
 
+    /* ── CART DRAWER ── */
+    .cart-overlay {
+      position:fixed; inset:0; z-index:500;
+      background:rgba(0,0,0,.6); backdrop-filter:blur(4px);
+      opacity:0; pointer-events:none;
+      transition:opacity .35s ease;
+    }
+    .cart-overlay.open { opacity:1; pointer-events:all; }
+    .cart-drawer {
+      position:fixed; top:0; right:0; bottom:0; z-index:600;
+      width:420px; max-width:100vw;
+      background:#0f0f0f; border-left:1px solid var(--border);
+      display:flex; flex-direction:column;
+      transform:translateX(100%);
+      transition:transform .4s cubic-bezier(.4,0,.2,1);
+    }
+    .cart-drawer.open { transform:translateX(0); }
+    .cart-drawer-head {
+      display:flex; justify-content:space-between; align-items:flex-start;
+      padding:24px 24px 16px; border-bottom:1px solid var(--border);
+      flex-shrink:0;
+    }
+    .cart-drawer-title { font-size:18px; font-weight:800; letter-spacing:-.02em; }
+    .cart-drawer-sub { font-size:12px; color:var(--muted); margin-top:2px; }
+    .cart-drawer-close {
+      width:32px; height:32px; border-radius:6px;
+      background:rgba(255,255,255,.06); border:none; cursor:pointer;
+      color:var(--muted); display:flex; align-items:center; justify-content:center;
+      transition:all .15s; flex-shrink:0;
+    }
+    .cart-drawer-close:hover { background:rgba(255,255,255,.12); color:#fff; }
+
+    /* Free shipping bar */
+    .cart-shipping-bar {
+      padding:14px 24px; background:rgba(214,238,1,.04);
+      border-bottom:1px solid var(--border); flex-shrink:0;
+    }
+    .csb-label {
+      display:flex; align-items:center; gap:7px;
+      font-size:12px; color:var(--muted); margin-bottom:8px;
+    }
+    .csb-track {
+      height:3px; background:rgba(255,255,255,.08); border-radius:99px; overflow:hidden;
+    }
+    .csb-fill {
+      height:100%; background:var(--accent); border-radius:99px;
+      transition:width .5s var(--ease);
+    }
+
+    /* Cart items list */
+    .cart-items { flex:1; overflow-y:auto; padding:16px 24px; }
+    .cart-items::-webkit-scrollbar { width:4px; }
+    .cart-items::-webkit-scrollbar-track { background:transparent; }
+    .cart-items::-webkit-scrollbar-thumb { background:rgba(255,255,255,.1); border-radius:99px; }
+    .cart-empty {
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      height:200px; gap:12px; color:var(--muted); text-align:center;
+    }
+    .cart-empty p { font-size:14px; }
+    .cart-empty-btn {
+      padding:10px 24px; border-radius:6px; border:1px solid var(--border);
+      background:transparent; color:var(--muted); font-size:13px;
+      font-family:'Poppins',sans-serif; cursor:pointer; transition:all .2s;
+    }
+    .cart-empty-btn:hover { border-color:rgba(214,238,1,.4); color:var(--accent); }
+    .cart-item {
+      display:flex; gap:14px; padding:14px 0;
+      border-bottom:1px solid var(--border);
+    }
+    .cart-item:last-child { border-bottom:none; }
+    .cart-item-img {
+      width:70px; height:70px; border-radius:8px; object-fit:cover;
+      flex-shrink:0; border:1px solid var(--border); filter:brightness(.8);
+    }
+    .cart-item-info { flex:1; min-width:0; }
+    .cart-item-name { font-size:13px; font-weight:600; line-height:1.3; margin-bottom:4px; }
+    .cart-item-price { font-size:15px; font-weight:800; color:var(--accent); }
+    .cart-item-actions { display:flex; align-items:center; gap:10px; margin-top:8px; }
+    .cart-qty {
+      display:flex; align-items:center; gap:0;
+      border:1px solid var(--border); border-radius:6px; overflow:hidden;
+    }
+    .cart-qty-btn {
+      width:28px; height:28px; background:transparent; border:none;
+      color:var(--muted); cursor:pointer; font-size:16px; font-family:'Poppins',sans-serif;
+      display:flex; align-items:center; justify-content:center;
+      transition:all .15s;
+    }
+    .cart-qty-btn:hover { background:rgba(255,255,255,.08); color:#fff; }
+    .cart-qty-num { min-width:28px; text-align:center; font-size:13px; font-weight:600; }
+    .cart-item-remove {
+      font-size:11px; color:rgba(255,255,255,.28); cursor:pointer;
+      background:none; border:none; font-family:'Poppins',sans-serif;
+      transition:color .15s; padding:0;
+    }
+    .cart-item-remove:hover { color:var(--red); }
+
+    /* Upsells */
+    .cart-upsells {
+      padding:16px 24px; border-top:1px solid var(--border); flex-shrink:0;
+      background:rgba(214,238,1,.03);
+    }
+    .upsell-label {
+      font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+      color:var(--accent); margin-bottom:12px;
+    }
+    .upsell-cards { display:flex; flex-direction:column; gap:10px; }
+    .upsell-card {
+      display:flex; align-items:center; gap:12px;
+      background:var(--card); border:1px solid var(--border);
+      border-radius:10px; padding:10px 12px;
+      transition:border-color .2s;
+    }
+    .upsell-card:hover { border-color:rgba(214,238,1,.3); }
+    .upsell-card img { width:44px; height:44px; border-radius:6px; object-fit:cover; flex-shrink:0; filter:brightness(.8); }
+    .upsell-info { flex:1; min-width:0; }
+    .upsell-name { font-size:12px; font-weight:600; line-height:1.3; }
+    .upsell-price { font-size:13px; font-weight:800; color:var(--accent); margin-top:2px; }
+    .upsell-add {
+      padding:8px 14px; border-radius:6px;
+      background:var(--red); color:#fff;
+      font-size:11px; font-weight:700; border:none; cursor:pointer;
+      font-family:'Poppins',sans-serif; white-space:nowrap; flex-shrink:0;
+      transition:background .2s;
+    }
+    .upsell-add:hover { background:#e00000; }
+
+    /* Cart footer */
+    .cart-footer {
+      padding:16px 24px 24px; border-top:1px solid var(--border); flex-shrink:0;
+    }
+    .cart-totals { margin-bottom:16px; display:flex; flex-direction:column; gap:8px; }
+    .cart-total-row { display:flex; justify-content:space-between; font-size:13px; }
+    .cart-total-row.muted { color:var(--muted); }
+    .cart-total-row.big { font-size:17px; font-weight:800; letter-spacing:-.02em; padding-top:8px; border-top:1px solid var(--border); margin-top:4px; }
+    .cart-checkout-btn {
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      width:100%; padding:16px; border-radius:8px;
+      background:var(--accent); color:#000;
+      font-size:15px; font-weight:800; text-decoration:none;
+      font-family:'Poppins',sans-serif; transition:all .2s; margin-bottom:10px;
+    }
+    .cart-checkout-btn:hover { background:#e8ff00; transform:translateY(-1px); }
+    .cart-continue-btn {
+      display:block; width:100%; padding:12px;
+      background:transparent; border:1px solid var(--border);
+      color:var(--muted); font-size:13px; font-family:'Poppins',sans-serif;
+      border-radius:8px; cursor:pointer; transition:all .2s; margin-bottom:12px;
+    }
+    .cart-continue-btn:hover { border-color:rgba(255,255,255,.2); color:#fff; }
+    .cart-trust {
+      display:flex; align-items:center; justify-content:center; gap:6px;
+      font-size:11px; color:rgba(255,255,255,.3);
+    }
+
+    /* ── WHATSAPP FLOAT ── */
+    .wa-float {
+      position:fixed; bottom:28px; right:28px; z-index:450;
+      display:flex; align-items:center; gap:10px;
+      background:#25D366; color:#fff;
+      padding:13px 18px 13px 16px; border-radius:999px;
+      text-decoration:none; box-shadow:0 8px 32px rgba(37,211,102,.4);
+      transition:all .25s var(--ease);
+    }
+    .wa-float:hover { transform:translateY(-3px) scale(1.04); box-shadow:0 12px 40px rgba(37,211,102,.55); }
+    .wa-label { font-size:13px; font-weight:700; white-space:nowrap; }
+
+    /* ── EXIT POPUP ── */
+    .exit-overlay {
+      position:fixed; inset:0; z-index:700;
+      background:rgba(0,0,0,.75); backdrop-filter:blur(6px);
+      opacity:0; pointer-events:none; transition:opacity .3s;
+    }
+    .exit-overlay.open { opacity:1; pointer-events:all; }
+    .exit-popup {
+      position:fixed; top:50%; left:50%; transform:translate(-50%,-60%);
+      z-index:800; width:480px; max-width:calc(100vw - 32px);
+      background:#0f0f0f; border:1px solid rgba(214,238,1,.25);
+      border-radius:20px; padding:44px 40px;
+      box-shadow:0 40px 80px rgba(0,0,0,.8), 0 0 80px rgba(214,238,1,.08);
+      opacity:0; pointer-events:none;
+      transition:all .35s cubic-bezier(.34,1.56,.64,1);
+      text-align:center;
+    }
+    .exit-popup.open { opacity:1; pointer-events:all; transform:translate(-50%,-50%); }
+    .exit-close {
+      position:absolute; top:16px; right:16px;
+      width:32px; height:32px; border-radius:6px;
+      background:rgba(255,255,255,.06); border:none; cursor:pointer;
+      color:var(--muted); display:flex; align-items:center; justify-content:center;
+    }
+    .exit-badge {
+      display:inline-block; padding:5px 14px; border-radius:999px;
+      background:var(--accent-dim); border:1px solid rgba(214,238,1,.3);
+      font-size:10px; font-weight:800; letter-spacing:.18em; color:var(--accent);
+      margin-bottom:18px;
+    }
+    .exit-title {
+      font-size:clamp(32px,5vw,44px); font-weight:900; letter-spacing:-.04em;
+      line-height:.95; margin-bottom:14px;
+    }
+    .exit-title em { color:var(--accent); font-style:normal; }
+    .exit-sub { font-size:14px; color:var(--muted); line-height:1.7; margin-bottom:24px; }
+    .exit-code {
+      background:rgba(214,238,1,.08); border:1px dashed rgba(214,238,1,.4);
+      border-radius:10px; padding:16px 20px; margin-bottom:22px; cursor:pointer;
+      transition:background .2s;
+    }
+    .exit-code:hover { background:rgba(214,238,1,.14); }
+    .exit-code #exitCode { font-size:24px; font-weight:900; color:var(--accent); letter-spacing:.1em; display:block; }
+    .exit-copy-hint { font-size:11px; color:var(--muted); margin-top:4px; display:block; }
+    .exit-dismiss {
+      display:block; width:100%; background:none; border:none;
+      font-size:11px; color:rgba(255,255,255,.25); font-family:'Poppins',sans-serif;
+      cursor:pointer; margin-top:12px; transition:color .2s;
+    }
+    .exit-dismiss:hover { color:rgba(255,255,255,.5); }
+
+    /* ── STARS / REVIEWS ── */
+    .prod-stars {
+      display:flex; align-items:center; gap:5px; margin-bottom:4px;
+    }
+    .stars-icons { display:flex; gap:2px; }
+    .stars-icons svg { width:11px; height:11px; }
+    .stars-count { font-size:11px; color:var(--muted); }
+
+    /* ── URGENCY ── */
+    .prod-urgency {
+      display:flex; align-items:center; gap:5px;
+      font-size:11px; font-weight:600; color:#ff6b35;
+      margin-top:4px;
+    }
+    .urgency-dot { width:6px; height:6px; border-radius:50%; background:#ff6b35; animation:pulse 1.4s infinite; flex-shrink:0; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
     /* ── TOAST ── */
     .toast {
       position:fixed; bottom:32px; right:32px; z-index:999;
@@ -489,6 +748,44 @@
   </style>
 </head>
 <body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announce-bar" id="announceBar">
+  <div class="announce-track">
+    <span class="announce-item">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      Envío GRATIS en compras +$120
+    </span>
+    <span class="announce-sep">·</span>
+    <span class="announce-item">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Productos 100% originales con garantía
+    </span>
+    <span class="announce-sep">·</span>
+    <span class="announce-item">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Oferta flash termina en: <strong id="countdownTimer" style="color:#000;margin-left:4px">04:59:23</strong>
+    </span>
+    <span class="announce-sep">·</span>
+    <span class="announce-item">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      Envío GRATIS en compras +$120
+    </span>
+    <span class="announce-sep">·</span>
+    <span class="announce-item">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Productos 100% originales con garantía
+    </span>
+    <span class="announce-sep">·</span>
+    <span class="announce-item">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Oferta flash termina en: <strong style="color:#000;margin-left:4px">04:59:23</strong>
+    </span>
+  </div>
+  <button class="announce-close" onclick="document.getElementById('announceBar').style.display='none'" aria-label="Cerrar">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+</div>
 
 <!-- NAV -->
 <nav>
@@ -714,13 +1011,24 @@
         <div class="prod-body">
           <div class="prod-cat">Cascos</div>
           <div class="prod-name">Casco Integral LS2 FF800 Storm II</div>
+          <div class="prod-stars">
+            <div class="stars-icons">
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <span class="stars-count">(127)</span>
+          </div>
           <div class="prod-price-row">
             <span class="prod-price">$189.99</span>
             <span class="prod-original">$219.99</span>
           </div>
+          <div class="prod-urgency"><span class="urgency-dot"></span>Solo 4 unidades en stock</div>
         </div>
         <div class="prod-actions">
-          <button class="prod-btn-add" onclick="addToCart('Casco LS2 FF800','189.99')">
+          <button class="prod-btn-add" onclick="addToCart('Casco LS2 FF800','189.99','https://images.unsplash.com/photo-1571819507488-0e1dfe7cc22d?w=120&q=80')">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             Agregar
           </button>
@@ -739,13 +1047,24 @@
         <div class="prod-body">
           <div class="prod-cat">Cascos</div>
           <div class="prod-name">Casco Modular LS2 FF906 Advant</div>
+          <div class="prod-stars">
+            <div class="stars-icons">
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="rgba(255,255,255,.15)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <span class="stars-count">(89)</span>
+          </div>
           <div class="prod-price-row">
             <span class="prod-price">$249.99</span>
             <span class="prod-original">$289.99</span>
           </div>
+          <div class="prod-urgency"><span class="urgency-dot"></span>7 personas lo ven ahora</div>
         </div>
         <div class="prod-actions">
-          <button class="prod-btn-add" onclick="addToCart('Casco LS2 FF906','249.99')">
+          <button class="prod-btn-add" onclick="addToCart('Casco LS2 FF906','249.99','https://images.unsplash.com/photo-1611004061856-ccc3cbe944b2?w=120&q=80')">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             Agregar
           </button>
@@ -764,13 +1083,24 @@
         <div class="prod-body">
           <div class="prod-cat">Accesorios Piloto</div>
           <div class="prod-name">Guantes Alpinestars SP-8 v3</div>
+          <div class="prod-stars">
+            <div class="stars-icons">
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <span class="stars-count">(214)</span>
+          </div>
           <div class="prod-price-row">
             <span class="prod-price">$54.99</span>
             <span class="prod-original">$74.99</span>
           </div>
+          <div class="prod-urgency"><span class="urgency-dot"></span>Solo 2 pares disponibles</div>
         </div>
         <div class="prod-actions">
-          <button class="prod-btn-add" onclick="addToCart('Guantes Alpinestars','54.99')">
+          <button class="prod-btn-add" onclick="addToCart('Guantes Alpinestars','54.99','https://images.unsplash.com/photo-1545284662-c3dda8bd045d?w=120&q=80')">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             Agregar
           </button>
@@ -789,13 +1119,23 @@
         <div class="prod-body">
           <div class="prod-cat">Llantas</div>
           <div class="prod-name">Llanta Michelin Pilot Street 2 140/70-17</div>
+          <div class="prod-stars">
+            <div class="stars-icons">
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="rgba(255,255,255,.15)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <span class="stars-count">(63)</span>
+          </div>
           <div class="prod-price-row">
             <span class="prod-price">$89.99</span>
             <span class="prod-original">$119.99</span>
           </div>
         </div>
         <div class="prod-actions">
-          <button class="prod-btn-add" onclick="addToCart('Llanta Michelin','89.99')">
+          <button class="prod-btn-add" onclick="addToCart('Llanta Michelin','89.99','https://images.unsplash.com/photo-1763142185959-be6f3dbdd31a?w=120&q=80')">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             Agregar
           </button>
@@ -814,13 +1154,24 @@
         <div class="prod-body">
           <div class="prod-cat">Eléctrico</div>
           <div class="prod-name">Kit LED H4 Canbus 6000K Plug &amp; Play</div>
+          <div class="prod-stars">
+            <div class="stars-icons">
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <span class="stars-count">(41)</span>
+          </div>
           <div class="prod-price-row">
             <span class="prod-price">$39.99</span>
             <span class="prod-original">$59.99</span>
           </div>
+          <div class="prod-urgency"><span class="urgency-dot"></span>Stock bajo — 5 disponibles</div>
         </div>
         <div class="prod-actions">
-          <button class="prod-btn-add" onclick="addToCart('Kit LED H4','39.99')">
+          <button class="prod-btn-add" onclick="addToCart('Kit LED H4','39.99','https://images.unsplash.com/photo-1711150943978-8d045550dd33?w=120&q=80')">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             Agregar
           </button>
@@ -839,13 +1190,23 @@
         <div class="prod-body">
           <div class="prod-cat">Motor</div>
           <div class="prod-name">Aceite Motul 7100 4T 10W-40 1L</div>
+          <div class="prod-stars">
+            <div class="stars-icons">
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <span class="stars-count">(312)</span>
+          </div>
           <div class="prod-price-row">
             <span class="prod-price">$15.99</span>
             <span class="prod-original">$21.99</span>
           </div>
         </div>
         <div class="prod-actions">
-          <button class="prod-btn-add" onclick="addToCart('Aceite Motul 7100','15.99')">
+          <button class="prod-btn-add" onclick="addToCart('Aceite Motul 7100','15.99','https://images.unsplash.com/photo-1746014995485-e8a698f39804?w=120&q=80')">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             Agregar
           </button>
@@ -864,13 +1225,24 @@
         <div class="prod-body">
           <div class="prod-cat">Partes y Piezas</div>
           <div class="prod-name">Kit Cadena DID 428VX + Piñón + Corona</div>
+          <div class="prod-stars">
+            <div class="stars-icons">
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="rgba(255,255,255,.15)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <span class="stars-count">(78)</span>
+          </div>
           <div class="prod-price-row">
             <span class="prod-price">$44.99</span>
             <span class="prod-original">$64.99</span>
           </div>
+          <div class="prod-urgency"><span class="urgency-dot"></span>Solo 3 kits restantes</div>
         </div>
         <div class="prod-actions">
-          <button class="prod-btn-add" onclick="addToCart('Kit Cadena DID','44.99')">
+          <button class="prod-btn-add" onclick="addToCart('Kit Cadena DID','44.99','https://images.unsplash.com/photo-1769537754999-724044ec2e32?w=120&q=80')">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             Agregar
           </button>
@@ -889,13 +1261,23 @@
         <div class="prod-body">
           <div class="prod-cat">Accesorios Piloto</div>
           <div class="prod-name">Rodilleras Knox Flex-Pro CE Nivel 2</div>
+          <div class="prod-stars">
+            <div class="stars-icons">
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="#D6EE01"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <span class="stars-count">(56)</span>
+          </div>
           <div class="prod-price-row">
             <span class="prod-price">$79.99</span>
             <span class="prod-original">$99.99</span>
           </div>
         </div>
         <div class="prod-actions">
-          <button class="prod-btn-add" onclick="addToCart('Rodilleras Knox','79.99')">
+          <button class="prod-btn-add" onclick="addToCart('Rodilleras Knox','79.99','https://images.unsplash.com/photo-1636761358770-009ce3957519?w=120&q=80')">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             Agregar
           </button>
@@ -1053,38 +1435,296 @@
   </div>
 </footer>
 
+<!-- CART DRAWER -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-head">
+    <div>
+      <div class="cart-drawer-title">Tu carrito</div>
+      <div class="cart-drawer-sub" id="cartItemCountLabel">0 productos</div>
+    </div>
+    <button class="cart-drawer-close" onclick="closeCart()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <!-- Free shipping progress -->
+  <div class="cart-shipping-bar" id="cartShippingBar">
+    <div class="csb-label">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      <span id="csbText">Te faltan <strong id="csbAmount">$120.00</strong> para envío gratis</span>
+    </div>
+    <div class="csb-track"><div class="csb-fill" id="csbFill" style="width:0%"></div></div>
+  </div>
+
+  <!-- Cart items -->
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty" id="cartEmpty">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <p>Tu carrito está vacío</p>
+      <button onclick="closeCart()" class="cart-empty-btn">Explorar productos</button>
+    </div>
+  </div>
+
+  <!-- Upsell section -->
+  <div class="cart-upsells" id="cartUpsells" style="display:none">
+    <div class="upsell-label">Agrega esto — lo compran juntos</div>
+    <div class="upsell-cards">
+      <div class="upsell-card">
+        <img src="https://images.unsplash.com/photo-1746014995485-e8a698f39804?w=120&q=80" alt="Aceite Motul"/>
+        <div class="upsell-info">
+          <div class="upsell-name">Aceite Motul 7100</div>
+          <div class="upsell-price">$15.99</div>
+        </div>
+        <button class="upsell-add" onclick="addToCart('Aceite Motul 7100','15.99','https://images.unsplash.com/photo-1746014995485-e8a698f39804?w=120&q=80')">+ Agregar</button>
+      </div>
+      <div class="upsell-card">
+        <img src="https://images.unsplash.com/photo-1545284662-c3dda8bd045d?w=120&q=80" alt="Guantes"/>
+        <div class="upsell-info">
+          <div class="upsell-name">Guantes SP-8 v3</div>
+          <div class="upsell-price">$54.99</div>
+        </div>
+        <button class="upsell-add" onclick="addToCart('Guantes Alpinestars SP-8','54.99','https://images.unsplash.com/photo-1545284662-c3dda8bd045d?w=120&q=80')">+ Agregar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart footer -->
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-totals">
+      <div class="cart-total-row"><span>Subtotal</span><span id="cartSubtotal">$0.00</span></div>
+      <div class="cart-total-row muted"><span>Envío</span><span id="cartShipping">Calculado al pagar</span></div>
+      <div class="cart-total-row big"><span>Total</span><span id="cartTotal">$0.00</span></div>
+    </div>
+    <a href="checkout.html" class="cart-checkout-btn">
+      Ir a pagar
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+    <button onclick="closeCart()" class="cart-continue-btn">Seguir comprando</button>
+    <div class="cart-trust">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Pago 100% seguro — SSL encriptado
+    </div>
+  </div>
+</div>
+
+<!-- WHATSAPP FLOAT -->
+<a href="https://wa.me/593999999999?text=Hola%20Alfapro%2C%20quiero%20información%20sobre%20un%20producto" target="_blank" class="wa-float" aria-label="WhatsApp">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+  <span class="wa-label">¿Tienes dudas?</span>
+</a>
+
+<!-- EXIT INTENT POPUP -->
+<div class="exit-overlay" id="exitOverlay" onclick="closeExitPopup()"></div>
+<div class="exit-popup" id="exitPopup">
+  <button class="exit-close" onclick="closeExitPopup()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <div class="exit-badge">OFERTA EXCLUSIVA</div>
+  <div class="exit-title">Espera —<br>10% OFF <em>para ti</em></div>
+  <p class="exit-sub">Antes de irte, usa este código en el checkout. Solo por hoy.</p>
+  <div class="exit-code" onclick="copyCode(this)">
+    <span id="exitCode">ALFAPRO10</span>
+    <span class="exit-copy-hint">Clic para copiar</span>
+  </div>
+  <a href="#productos" class="btn-accent" onclick="closeExitPopup()" style="width:100%;justify-content:center;padding:16px">
+    Quiero mi descuento
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+  </a>
+  <button onclick="closeExitPopup()" class="exit-dismiss">No, prefiero pagar precio completo</button>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast"><span id="toastMsg">Agregado al carrito</span></div>
 
 <script>
-  // Cart
-  let cart = parseInt(localStorage.getItem('alfapro_cart') || '0');
-  document.getElementById('cartCount').textContent = cart;
+  // ── CART STATE ──
+  let cartItems = JSON.parse(localStorage.getItem('alfapro_cart_v2') || '[]');
 
-  function addToCart(name, price) {
-    cart++;
-    localStorage.setItem('alfapro_cart', cart);
-    document.getElementById('cartCount').textContent = cart;
-    showToast(name + ' — $' + price + ' agregado');
+  function saveCart() {
+    localStorage.setItem('alfapro_cart_v2', JSON.stringify(cartItems));
   }
 
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    document.getElementById('toastMsg').textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3200);
+  function getTotalPrice() {
+    return cartItems.reduce((s, i) => s + parseFloat(i.price) * i.qty, 0);
   }
 
-  // Scroll reveal
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        observer.unobserve(e.target);
+  function renderCart() {
+    const totalCount = cartItems.reduce((s, i) => s + i.qty, 0);
+    document.getElementById('cartCount').textContent = totalCount;
+    document.getElementById('cartItemCountLabel').textContent = totalCount + (totalCount === 1 ? ' producto' : ' productos');
+
+    const itemsEl = document.getElementById('cartItems');
+    const emptyEl = document.getElementById('cartEmpty');
+    const footerEl = document.getElementById('cartFooter');
+    const upsellEl = document.getElementById('cartUpsells');
+    const shippingEl = document.getElementById('cartShippingBar');
+
+    if (cartItems.length === 0) {
+      emptyEl.style.display = 'flex';
+      footerEl.style.display = 'none';
+      upsellEl.style.display = 'none';
+      shippingEl.style.display = 'none';
+      itemsEl.innerHTML = '';
+      itemsEl.appendChild(emptyEl);
+      return;
+    }
+
+    emptyEl.style.display = 'none';
+    footerEl.style.display = 'block';
+    upsellEl.style.display = 'block';
+    shippingEl.style.display = 'block';
+
+    // Render items
+    let html = '';
+    cartItems.forEach((item, idx) => {
+      html += `
+        <div class="cart-item" data-idx="${idx}">
+          <img class="cart-item-img" src="${item.img}" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1571819507488-0e1dfe7cc22d?w=120&q=80'"/>
+          <div class="cart-item-info">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-price">$${(parseFloat(item.price) * item.qty).toFixed(2)}</div>
+            <div class="cart-item-actions">
+              <div class="cart-qty">
+                <button class="cart-qty-btn" onclick="changeQty(${idx},-1)">−</button>
+                <span class="cart-qty-num">${item.qty}</span>
+                <button class="cart-qty-btn" onclick="changeQty(${idx},1)">+</button>
+              </div>
+              <button class="cart-item-remove" onclick="removeItem(${idx})">Eliminar</button>
+            </div>
+          </div>
+        </div>`;
+    });
+    itemsEl.innerHTML = html;
+
+    // Totals
+    const total = getTotalPrice();
+    const freeShippingThreshold = 120;
+    const remaining = Math.max(0, freeShippingThreshold - total);
+    const pct = Math.min(100, (total / freeShippingThreshold) * 100);
+
+    document.getElementById('csbFill').style.width = pct + '%';
+    if (remaining <= 0) {
+      document.getElementById('csbText').innerHTML = '<strong style="color:#D6EE01">Envío gratis desbloqueado!</strong>';
+      document.getElementById('cartShipping').textContent = 'GRATIS';
+    } else {
+      document.getElementById('csbText').innerHTML = 'Te faltan <strong id="csbAmount">$' + remaining.toFixed(2) + '</strong> para envío gratis';
+      document.getElementById('cartShipping').textContent = 'Calculado al pagar';
+    }
+
+    document.getElementById('cartSubtotal').textContent = '$' + total.toFixed(2);
+    document.getElementById('cartTotal').textContent = '$' + total.toFixed(2);
+  }
+
+  function addToCart(name, price, img) {
+    img = img || 'https://images.unsplash.com/photo-1571819507488-0e1dfe7cc22d?w=120&q=80';
+    const existing = cartItems.find(i => i.name === name);
+    if (existing) {
+      existing.qty++;
+    } else {
+      cartItems.push({ name, price, img, qty: 1 });
+    }
+    saveCart();
+    renderCart();
+    openCart();
+  }
+
+  function changeQty(idx, delta) {
+    cartItems[idx].qty += delta;
+    if (cartItems[idx].qty <= 0) cartItems.splice(idx, 1);
+    saveCart();
+    renderCart();
+  }
+
+  function removeItem(idx) {
+    cartItems.splice(idx, 1);
+    saveCart();
+    renderCart();
+  }
+
+  function openCart() {
+    document.getElementById('cartDrawer').classList.add('open');
+    document.getElementById('cartOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCart() {
+    document.getElementById('cartDrawer').classList.remove('open');
+    document.getElementById('cartOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Cart button opens drawer
+  document.querySelector('.cart-btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    openCart();
+  });
+
+  renderCart();
+
+  // ── COUNTDOWN TIMER ──
+  function startCountdown() {
+    let saved = parseInt(sessionStorage.getItem('alfapro_countdown') || '0');
+    if (!saved || saved < Date.now()) {
+      saved = Date.now() + (5 * 60 * 60 * 1000); // 5 hours
+      sessionStorage.setItem('alfapro_countdown', saved);
+    }
+    function tick() {
+      const diff = Math.max(0, saved - Date.now());
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      const str = (h > 0 ? h + ':' : '') + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+      document.querySelectorAll('#countdownTimer').forEach(el => el.textContent = str);
+    }
+    tick();
+    setInterval(tick, 1000);
+  }
+  startCountdown();
+
+  // ── EXIT INTENT ──
+  let exitShown = sessionStorage.getItem('alfapro_exit_shown');
+  if (!exitShown) {
+    document.addEventListener('mouseleave', function(e) {
+      if (e.clientY <= 0 && !exitShown) {
+        exitShown = true;
+        sessionStorage.setItem('alfapro_exit_shown', '1');
+        setTimeout(() => {
+          document.getElementById('exitOverlay').classList.add('open');
+          document.getElementById('exitPopup').classList.add('open');
+        }, 200);
       }
     });
-  }, { threshold: 0.1 });
+  }
+
+  function closeExitPopup() {
+    document.getElementById('exitOverlay').classList.remove('open');
+    document.getElementById('exitPopup').classList.remove('open');
+  }
+
+  function copyCode(el) {
+    const code = document.getElementById('exitCode').textContent;
+    navigator.clipboard.writeText(code).catch(() => {});
+    el.querySelector('.exit-copy-hint').textContent = 'Copiado!';
+    setTimeout(() => el.querySelector('.exit-copy-hint').textContent = 'Clic para copiar', 2000);
+  }
+
+  // ── SCROLL REVEAL ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ── NAV OFFSET for announce bar ──
+  function adjustNavOffset() {
+    const bar = document.getElementById('announceBar');
+    const barH = bar && bar.style.display !== 'none' ? bar.offsetHeight : 0;
+    document.querySelector('nav').style.top = barH + 'px';
+  }
+  adjustNavOffset();
+  document.querySelector('.announce-close').addEventListener('click', adjustNavOffset);
 </script>
 </body>
 </html>
