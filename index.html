@@ -126,6 +126,8 @@
       font-weight: 500;
       letter-spacing: 0.06em;
       transition: color 0.2s;
+      padding: 14px 0;
+      display: inline-block;
     }
     .nav-links a:hover { color: var(--white); }
 
@@ -489,7 +491,7 @@
     .product-card:hover .product-actions { opacity: 1; transform: translateY(0); }
 
     .icon-btn {
-      width: 34px; height: 34px;
+      width: 44px; height: 44px;
       backdrop-filter: blur(8px);
       background: rgba(10,10,10,0.7);
       border: 1px solid var(--card-border);
@@ -497,7 +499,7 @@
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       color: var(--white);
-      transition: background 0.2s;
+      transition: background 0.2s, border-color 0.2s;
     }
     .icon-btn:hover { background: var(--green); color: #0a0a0a; }
 
@@ -592,7 +594,7 @@
     .promo-wrap {
       position: relative;
       margin: 0 80px;
-      border-radius: 24px;
+      border-radius: 20px;
       overflow: hidden;
       border: 1px solid rgba(155,196,42,0.2);
       padding: 80px;
@@ -702,6 +704,147 @@
       width: 100%; height: 100%;
       display: flex; align-items: center; justify-content: center;
       background: #111;
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ── RESPONSIVE ── */
+
+    @media (max-width: 1200px) {
+      .hero-content { padding: 80px 48px; }
+      .section, .section-sm { padding-left: 48px; padding-right: 48px; }
+      footer { padding-left: 48px; padding-right: 48px; }
+      .promo-wrap { margin-left: 48px; margin-right: 48px; }
+    }
+
+    @media (max-width: 1024px) {
+      nav { padding: 0 32px; }
+      .hero-content { padding: 60px 32px; gap: 40px; }
+      .section { padding: 80px 32px; }
+      .section-sm { padding: 48px 32px; }
+      .cats-grid { grid-template-columns: repeat(4, 1fr); height: auto; min-height: 340px; }
+      .cat-card:first-child { grid-column: span 2; grid-row: span 1; }
+      .products-grid { grid-template-columns: repeat(2, 1fr); }
+      .about-grid { gap: 40px; }
+      .about-img-wrap { height: 440px; }
+      .footer-top { grid-template-columns: 2fr 1fr 1fr; gap: 32px; }
+      .promo-wrap { margin-left: 32px; margin-right: 32px; padding: 60px; }
+    }
+
+    @media (max-width: 768px) {
+      /* Nav */
+      nav { padding: 0 20px; height: 60px; }
+      .nav-links { display: none; }
+      .btn-pill { padding: 9px 20px; font-size: 12px; }
+
+      /* Sections */
+      .section { padding: 60px 20px; }
+      .section-sm { padding: 36px 20px; }
+      footer { padding: 56px 20px 40px; }
+
+      /* Hero */
+      .hero-content {
+        grid-template-columns: 1fr;
+        padding: 40px 20px 56px;
+        gap: 0;
+      }
+      .hero-right { display: none; }
+      .hero-stats { gap: 20px; }
+      .stat-num { font-size: 30px; }
+      .hero-desc { max-width: 100%; }
+
+      /* Headings */
+      .h1 { font-size: clamp(32px, 9vw, 52px); }
+      .h2 { font-size: clamp(24px, 7vw, 40px); }
+
+      /* Section header stacks */
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 32px;
+      }
+
+      /* Categories — horizontal scroll */
+      .cats-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 10px;
+        height: 220px;
+        padding-bottom: 4px;
+      }
+      .cats-grid::-webkit-scrollbar { display: none; }
+      .cat-card {
+        flex: 0 0 180px;
+        min-width: 180px;
+        scroll-snap-align: start;
+        grid-column: unset !important;
+        grid-row: unset !important;
+        border-radius: 16px;
+      }
+      .cat-card:first-child {
+        flex: 0 0 220px;
+        min-width: 220px;
+      }
+      .cat-card:first-child .cat-name { font-size: 22px; }
+
+      /* Products */
+      .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .product-info { padding: 14px 14px; }
+      .product-name { font-size: 12px; line-height: 1.4; margin-bottom: 10px; }
+      .product-price { font-size: 18px; }
+      .product-price .old { font-size: 12px; }
+
+      /* Features strip */
+      .features-strip { grid-template-columns: repeat(2, 1fr); }
+      .feature-item { padding: 28px 20px; }
+
+      /* Promo */
+      .promo-wrap {
+        margin: 0 20px;
+        padding: 40px 28px;
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+      .promo-desc { max-width: 100%; }
+
+      /* About */
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .about-img-wrap { height: 300px; }
+      .about-year-stamp { font-size: 72px; }
+      .about-card-float { display: none; }
+
+      /* Locations */
+      .locations-grid { grid-template-columns: 1fr; }
+      .location-city { font-size: 36px; }
+      .location-card { padding: 32px; }
+
+      /* Footer */
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
+      .footer-bottom { flex-direction: column; gap: 14px; align-items: flex-start; }
+    }
+
+    @media (max-width: 480px) {
+      .products-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .product-info { padding: 11px 12px; }
+      .product-price { font-size: 16px; }
+      .features-strip { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .hero-actions { flex-direction: column; align-items: flex-start; gap: 10px; }
     }
   </style>
 </head>
@@ -827,10 +970,10 @@
       <div class="label">Lo que tenemos</div>
       <h2 class="h1">Nuestras<br/>Categorías</h2>
     </div>
-    <a href="productos/casco-ls2-ff800.html" class="link-more">Ver todas →</a>
+    <a href="productos/casco-ls2-ff800.html" class="link-more">Ver todas <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-left:2px"><polyline points="9 18 15 12 9 6"/></svg></a>
   </div>
 
-  <div class="cats-grid">
+  <div class="cats-grid reveal">
     <a href="productos/casco-ls2-ff800.html" class="cat-card" style="grid-column:span 2;grid-row:span 2;">
       <div class="cat-bg" style="background-image:url('https://images.unsplash.com/photo-1611004061856-ccc3cbe944b2?w=800&q=80')"></div>
       <div class="cat-glow"></div>
@@ -930,17 +1073,17 @@
       <div class="label">Lo más vendido</div>
       <h2 class="h1">Productos<br/>Destacados</h2>
     </div>
-    <a href="productos/casco-ls2-ff800.html" class="link-more">Ver todos →</a>
+    <a href="productos/casco-ls2-ff800.html" class="link-more">Ver todos <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-left:2px"><polyline points="9 18 15 12 9 6"/></svg></a>
   </div>
 
-  <div class="products-grid">
+  <div class="products-grid reveal">
     <a href="productos/casco-ls2-ff800.html" class="product-card">
       <div class="product-img">
         <img src="https://images.unsplash.com/photo-1571819507488-0e1dfe7cc22d?w=400&q=80" alt="Casco Integral LS2 FF800" />
-        <div class="product-badge">⭐ Más Vendido</div>
+        <div class="product-badge">Más Vendido</div>
         <div class="product-actions">
-          <button class="icon-btn" onclick="event.preventDefault()">♡</button>
-          <button class="icon-btn" onclick="event.preventDefault()">🛒</button>
+          <button class="icon-btn" onclick="event.preventDefault()" aria-label="Guardar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+          <button class="icon-btn" onclick="event.preventDefault()" aria-label="Agregar al carrito"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></button>
         </div>
       </div>
       <div class="product-info">
@@ -953,10 +1096,10 @@
     <a href="productos/guantes-alpinestars-sp8.html" class="product-card">
       <div class="product-img">
         <img src="https://images.unsplash.com/photo-1545284662-c3dda8bd045d?w=400&q=80" alt="Guantes Alpinestars SP-8" />
-        <div class="product-badge" style="background:rgba(255,255,255,0.1);color:var(--white);backdrop-filter:blur(8px);">🏆 Bestseller</div>
+        <div class="product-badge" style="background:rgba(255,255,255,0.1);color:var(--white);backdrop-filter:blur(8px);">Bestseller</div>
         <div class="product-actions">
-          <button class="icon-btn" onclick="event.preventDefault()">♡</button>
-          <button class="icon-btn" onclick="event.preventDefault()">🛒</button>
+          <button class="icon-btn" onclick="event.preventDefault()" aria-label="Guardar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+          <button class="icon-btn" onclick="event.preventDefault()" aria-label="Agregar al carrito"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></button>
         </div>
       </div>
       <div class="product-info">
@@ -969,10 +1112,10 @@
     <a href="productos/kit-led-h4.html" class="product-card">
       <div class="product-img">
         <img src="https://images.unsplash.com/photo-1711150943978-8d045550dd33?w=400&q=80" alt="Kit LED H4" />
-        <div class="product-badge" style="background:rgba(155,196,42,0.15);color:var(--green);border:1px solid rgba(155,196,42,0.3);">⚡ Oferta</div>
+        <div class="product-badge" style="background:rgba(155,196,42,0.15);color:var(--green);border:1px solid rgba(155,196,42,0.3);">Oferta</div>
         <div class="product-actions">
-          <button class="icon-btn" onclick="event.preventDefault()">♡</button>
-          <button class="icon-btn" onclick="event.preventDefault()">🛒</button>
+          <button class="icon-btn" onclick="event.preventDefault()" aria-label="Guardar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+          <button class="icon-btn" onclick="event.preventDefault()" aria-label="Agregar al carrito"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></button>
         </div>
       </div>
       <div class="product-info">
@@ -985,10 +1128,10 @@
     <a href="productos/aceite-motul-7100.html" class="product-card">
       <div class="product-img">
         <img src="https://images.unsplash.com/photo-1746014995485-e8a698f39804?w=400&q=80" alt="Aceite Motul 7100" />
-        <div class="product-badge">💚 100% Sint.</div>
+        <div class="product-badge">100% Sint.</div>
         <div class="product-actions">
-          <button class="icon-btn" onclick="event.preventDefault()">♡</button>
-          <button class="icon-btn" onclick="event.preventDefault()">🛒</button>
+          <button class="icon-btn" onclick="event.preventDefault()" aria-label="Guardar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+          <button class="icon-btn" onclick="event.preventDefault()" aria-label="Agregar al carrito"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></button>
         </div>
       </div>
       <div class="product-info">
@@ -1001,8 +1144,8 @@
 </section>
 
 <!-- PROMO -->
-<div style="padding:0 0 100px;">
-  <div class="promo-wrap card">
+<div style="padding:0 0 100px;" class="promo-outer">
+  <div class="promo-wrap card reveal">
     <div class="promo-bg"></div>
     <div class="promo-glow"></div>
     <div class="promo-content">
@@ -1010,7 +1153,7 @@
       <h2 class="promo-title">Servicio Mecánico<br/>Con 20% OFF</h2>
       <p class="promo-desc">Este mes, todos los servicios de mecánica tienen descuento especial. Trae tu moto a cualquiera de nuestras sucursales.</p>
     </div>
-    <a href="https://wa.me/593969465646" class="btn-green">Agendar ahora →</a>
+    <a href="https://wa.me/593969465646" class="btn-green">Agendar ahora</a>
   </div>
 </div>
 
@@ -1171,6 +1314,19 @@
 <a href="https://wa.me/593969465646" class="wa-float">
   <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.11.548 4.089 1.504 5.798L0 24l6.37-1.49A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.007-1.371l-.36-.213-3.727.871.938-3.63-.235-.374A9.818 9.818 0 0112 2.182c5.427 0 9.818 4.39 9.818 9.818 0 5.427-4.39 9.818-9.818 9.818z"/></svg>
 </a>
+
+<script>
+  // Scroll-reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
 
 </body>
 </html>

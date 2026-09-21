@@ -3,6 +3,33 @@
 
 import os
 
+# ── ICONOS SVG (sin emoji) ─────────────────────────────────────────────────
+def ico(name, size=20):
+    s = str(size)
+    paths = {
+        "shield":  f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="#9BC42A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+        "lock":    f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="#9BC42A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+        "wind":    f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="#9BC42A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>',
+        "flag":    f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="#9BC42A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>',
+        "bolt":    f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="#9BC42A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+        "target":  f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="#9BC42A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+        "wrench":  f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="#9BC42A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+        "check":   f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="#9BC42A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+        "droplet": f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="#9BC42A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>',
+        "layers":  f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="#9BC42A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
+        "settings":f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="#9BC42A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+        "eye":     f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="#9BC42A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+        # Trust icons (gray)
+        "truck":   f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>',
+        "lock_g":  f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+        "return":  f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>',
+        "phone":   f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 3.09 9.81a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 2 .84h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L6.91 8.21a16 16 0 0 0 6.29 6.29l1.53-1.34a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+        # Cart for buttons
+        "cart":    f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>',
+        "pin":     f'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+    }
+    return paths.get(name, "")
+
 BASE = "/Users/luisarmijos/Desktop/alfapro-ecommerce"
 
 # ── IMÁGENES VERIFICADAS 100% MOTO ─────────────────────────────────────────
@@ -44,15 +71,15 @@ PRODUCTS = [
         "img2": "1611004061856-ccc3cbe944b2",  # casco en moto ✅
         "img3": "1636761358770-009ce3957519",  # mecánico ✅
         "bg":   "1558981806-ec527fa84c39",     # racing bg
-        "badge": "⭐ Más Vendido",
+        "badge": "Más Vendido",
         "stars": "4.9", "reviews_count": "127",
         "hook": "El casco que los pilotos profesionales eligen cuando importa el tiempo.",
         "short_desc": "Casco integral de fibra de vidrio con aerodinámica deportiva, visor anti-UV de serie y ventilación triple. Tallas XS–XXL.",
         "features": [
-            ("🏁", "Fibra de Vidrio", "Carcasa ultraliviana y resistente a impactos severos"),
-            ("👁️", "Visor Anti-UV", "Policarbonato tratado, rápido reemplazo sin herramientas"),
-            ("💨", "Ventilación Triple", "Entrada frente + salida nuca, temperatura controlada"),
-            ("🔒", "Cierre Micro-lock", "Sin errores. Sin fallos. Siempre ajustado al milímetro."),
+            (ico("flag"), "Fibra de Vidrio", "Carcasa ultraliviana y resistente a impactos severos"),
+            (ico("eye"), "Visor Anti-UV", "Policarbonato tratado, rápido reemplazo sin herramientas"),
+            (ico("wind"), "Ventilación Triple", "Entrada frente + salida nuca, temperatura controlada"),
+            (ico("lock"), "Cierre Micro-lock", "Sin errores. Sin fallos. Siempre ajustado al milímetro."),
         ],
         "specs": [
             ("Material carcasa", "Fibra de vidrio"), ("Peso aprox.", "1,350 g"),
@@ -81,15 +108,15 @@ PRODUCTS = [
         "img2": "1571819507488-0e1dfe7cc22d",  # casco rojo ✅
         "img3": "1636761358770-009ce3957519",  # mecánico ✅
         "bg":   "1558981806-ec527fa84c39",
-        "badge": "🔥 Nuevo",
+        "badge": "Nuevo",
         "stars": "4.8", "reviews_count": "89",
         "hook": "La libertad de un abierto. La protección de un integral.",
         "short_desc": "Casco modular apertura one-touch, sistema 2-en-1 homologado P/J, preparado para comunicadores Bluetooth.",
         "features": [
-            ("🔓", "Apertura One-Touch", "Quita la mentonera con una sola mano, sin parar el motor"),
-            ("🎧", "Bluetooth Ready", "Canaleta preinstalada, compatible con todos los intercoms"),
-            ("🛡️", "2-en-1 Homologado", "Certificación ECE en posición cerrada y abierta"),
-            ("☀️", "Doble Visor", "Sol interior retráctil — no más gafas adicionales"),
+            (ico("wrench"), "Apertura One-Touch", "Quita la mentonera con una sola mano, sin parar el motor"),
+            (ico("bolt"), "Bluetooth Ready", "Canaleta preinstalada, compatible con todos los intercoms"),
+            (ico("shield"), "2-en-1 Homologado", "Certificación ECE en posición cerrada y abierta"),
+            (ico("eye"), "Doble Visor", "Sol interior retráctil — no más gafas adicionales"),
         ],
         "specs": [
             ("Tipo", "Modular / Abatible"), ("Material", "ABS tricapa reforzado"),
@@ -118,15 +145,15 @@ PRODUCTS = [
         "img2": "1763919417453-dea1172b98fa",  # guantes sobre moto ✅
         "img3": "1558899412-db4a281fa0ed",     # manubrio moto ✅
         "bg":   "1636761358772-798789548d25",  # taller
-        "badge": "🏆 Bestseller",
+        "badge": "Bestseller",
         "stars": "4.9", "reviews_count": "204",
         "hook": "Tus manos merecen el mismo nivel de protección que tu casco.",
         "short_desc": "Guantes de cuero canguro con protección de nudillos TPR, palma reforzada y tira reflectante 360°. El estándar de los pilotos de circuito.",
         "features": [
-            ("🤜", "Cuero Canguro", "Palma en cuero canguro: ultra-grip, 3× más resistente al desgarre"),
-            ("🛡️", "TPR Nudillos", "Protector termoplástico moldeado sobre nudillos y dorso"),
-            ("🌙", "Reflectante 360°", "Tira reflectante perimetral, visible desde 150m en la noche"),
-            ("✋", "Ajuste Micro", "Velcro de ajuste en muñeca + apertura posterior stretch"),
+            (ico("layers"), "Cuero Canguro", "Palma en cuero canguro: ultra-grip, 3× más resistente al desgarre"),
+            (ico("shield"), "TPR Nudillos", "Protector termoplástico moldeado sobre nudillos y dorso"),
+            (ico("target"), "Reflectante 360°", "Tira reflectante perimetral, visible desde 150m en la noche"),
+            (ico("settings"), "Ajuste Micro", "Velcro de ajuste en muñeca + apertura posterior stretch"),
         ],
         "specs": [
             ("Material exterior", "Cuero bovino + parches cuero canguro"),
@@ -159,15 +186,15 @@ PRODUCTS = [
         "img2": "1763919417453-dea1172b98fa",  # guantes moto ✅
         "img3": "1636761358772-798789548d25",  # taller motos ✅
         "bg":   "1636761358772-798789548d25",  # taller
-        "badge": "🛡️ CE Nivel 2",
+        "badge": "CE Nivel 2",
         "stars": "4.8", "reviews_count": "76",
         "hook": "El accidente que no esperas. La protección que siempre llevas puesta.",
         "short_desc": "Rodilleras con certificación CE Nivel 2, material Flex-Pro que se adapta al movimiento y se endurece en el impacto. Uso on/off road.",
         "features": [
-            ("🦵", "CE Nivel 2", "La máxima certificación para protecciones independientes"),
-            ("🤸", "Flex-Pro D3O", "Material flexible en movimiento, rígido en impacto"),
-            ("⚡", "Universal Fit", "Correas 360° ajustables, compatible con pantalón o piel"),
-            ("💧", "Resistente Agua", "Exterior ventilado + interior absorbente sin retención"),
+            (ico("shield"), "CE Nivel 2", "La máxima certificación para protecciones independientes"),
+            (ico("layers"), "Flex-Pro D3O", "Material flexible en movimiento, rígido en impacto"),
+            (ico("bolt"), "Universal Fit", "Correas 360° ajustables, compatible con pantalón o piel"),
+            (ico("droplet"), "Resistente Agua", "Exterior ventilado + interior absorbente sin retención"),
         ],
         "specs": [
             ("Certificación", "CE EN 1621-1 Nivel 2"),
@@ -200,15 +227,15 @@ PRODUCTS = [
         "img2": "1636761358770-009ce3957519",  # mecánico ✅
         "img3": "1611004061856-ccc3cbe944b2",  # casco en moto ✅
         "bg":   "1558981806-ec527fa84c39",     # racing
-        "badge": "🔧 Universal",
+        "badge": "Universal",
         "stars": "4.7", "reviews_count": "143",
         "hook": "Diseñados para correr. Construidos para durar.",
         "short_desc": "Par de espejos CNC en aluminio 6061-T6, cristal convexo 180°, antivibración integrado. Rosca universal 10mm/8mm.",
         "features": [
-            ("⚙️", "CNC Fresado", "Aluminio 6061-T6 mecanizado en fábrica, sin soldaduras"),
-            ("👁️", "Cristal Convexo 180°", "Campo visual ampliado, elimina el punto ciego lateral"),
-            ("🎯", "Anti-vibración", "Junta amortiguadora en base elimina el titileo a alta vel."),
-            ("🔩", "Universal 10/8mm", "Adaptadores incluidos para casi cualquier moto del mercado"),
+            (ico("settings"), "CNC Fresado", "Aluminio 6061-T6 mecanizado en fábrica, sin soldaduras"),
+            (ico("eye"), "Cristal Convexo 180°", "Campo visual ampliado, elimina el punto ciego lateral"),
+            (ico("target"), "Anti-vibración", "Junta amortiguadora en base elimina el titileo a alta vel."),
+            (ico("wrench"), "Universal 10/8mm", "Adaptadores incluidos para casi cualquier moto del mercado"),
         ],
         "specs": [
             ("Material", "Aluminio CNC 6061-T6 anodizado negro"),
@@ -240,15 +267,15 @@ PRODUCTS = [
         "img2": "1763142185959-be6f3dbdd31a",  # rueda trasera moto ✅
         "img3": "1636761358770-009ce3957519",  # mecánico ✅
         "bg":   "1636761358772-798789548d25",  # taller
-        "badge": "✅ Kit Completo",
+        "badge": "Kit Completo",
         "stars": "4.8", "reviews_count": "98",
         "hook": "Una cadena rota te deja a pie. Una cadena DID te lleva lejos.",
         "short_desc": "Kit completo: cadena DID 428VX O-ring 120 eslabones + piñón y corona acero forjado CNC. Para motos 125-250cc.",
         "features": [
-            ("🔗", "O-Ring Sellado", "Retención de lubricante interna, vida útil 3× superior"),
-            ("⚙️", "Acero Forjado", "Piñón y corona CNC en acero 420 HV tratado térmicamente"),
-            ("🔢", "120 Eslabones", "Eslabones y remaches con cierre de seguridad incluido"),
-            ("🔧", "Kit Completo", "Cadena + piñón + corona + pasador de cierre"),
+            (ico("lock"), "O-Ring Sellado", "Retención de lubricante interna, vida útil 3× superior"),
+            (ico("settings"), "Acero Forjado", "Piñón y corona CNC en acero 420 HV tratado térmicamente"),
+            (ico("layers"), "120 Eslabones", "Eslabones y remaches con cierre de seguridad incluido"),
+            (ico("wrench"), "Kit Completo", "Cadena + piñón + corona + pasador de cierre"),
         ],
         "specs": [
             ("Cadena", "DID 428VX O-ring"), ("Eslabones", "120 (cortable)"),
@@ -277,15 +304,15 @@ PRODUCTS = [
         "img2": "1769537754999-724044ec2e32",  # cadena/rueda moto ✅
         "img3": "1636761358772-798789548d25",  # taller ✅
         "bg":   "1636761358772-798789548d25",  # taller
-        "badge": "🔴 Seguridad",
+        "badge": "Seguridad",
         "stars": "4.9", "reviews_count": "186",
         "hook": "Cuando frenas, no hay segunda oportunidad.",
         "short_desc": "Pastillas EBC FA Series en compuesto orgánico de alta fricción. Sin período de rodaje, fade resistente hasta 350°C.",
         "features": [
-            ("🛑", "Sin Break-in", "Máxima fricción desde la primera frenada, sin período de rodaje"),
-            ("🌡️", "Fade Resistente", "Coeficiente estable a 350°C — sin fade en bajadas largas"),
-            ("📏", "Precisión OEM", "Geometría idéntica a la pieza original, sin rectificado"),
-            ("♻️", "Sin Metales Pesados", "Compuesto libre de asbesto y cobre"),
+            (ico("check"), "Sin Break-in", "Máxima fricción desde la primera frenada, sin período de rodaje"),
+            (ico("bolt"), "Fade Resistente", "Coeficiente estable a 350°C — sin fade en bajadas largas"),
+            (ico("target"), "Precisión OEM", "Geometría idéntica a la pieza original, sin rectificado"),
+            (ico("shield"), "Sin Metales Pesados", "Compuesto libre de asbesto y cobre"),
         ],
         "specs": [
             ("Compuesto", "Orgánico FA Series"),
@@ -317,15 +344,15 @@ PRODUCTS = [
         "img2": "1776264762509-60b8091cfb20",  # bujía ✅
         "img3": "1534755563369-ad37931ac77b",  # motor moto ✅
         "bg":   "1534755563369-ad37931ac77b",  # engine
-        "badge": "💚 100% Sintético",
+        "badge": "100% Sintético",
         "stars": "4.9", "reviews_count": "312",
         "hook": "El lubricante que el motor de competición necesita. Para tu moto de calle.",
         "short_desc": "Aceite 100% sintético con tecnología Éster para motores 4T. Protección extrema en arranque frío y alta temperatura. JASO MA2.",
         "features": [
-            ("⚗️", "Tecnología Éster", "Lubricación molecular que recubre las superficies 24/7"),
-            ("🌡️", "Rango Extremo", "Viscosidad estable de -20°C hasta 150°C de temperatura de aceite"),
-            ("✅", "JASO MA2", "Certificación obligatoria para motos con embrague en baño de aceite"),
-            ("⏱️", "Intervalo Extendido", "Hasta 5,000 km entre cambios con motor en perfecto estado"),
+            (ico("droplet"), "Tecnología Éster", "Lubricación molecular que recubre las superficies 24/7"),
+            (ico("bolt"), "Rango Extremo", "Viscosidad estable de -20°C hasta 150°C de temperatura de aceite"),
+            (ico("check"), "JASO MA2", "Certificación obligatoria para motos con embrague en baño de aceite"),
+            (ico("flag"), "Intervalo Extendido", "Hasta 5,000 km entre cambios con motor en perfecto estado"),
         ],
         "specs": [
             ("Tipo", "100% Sintético"), ("Viscosidad", "SAE 10W-40"),
@@ -354,15 +381,15 @@ PRODUCTS = [
         "img2": "1558899412-db4a281fa0ed",     # manubrio ✅
         "img3": "1636761358770-009ce3957519",  # mecánico ✅
         "bg":   "1558981806-ec527fa84c39",     # racing
-        "badge": "⚡ Plug & Play",
+        "badge": "Plug & Play",
         "stars": "4.7", "reviews_count": "221",
         "hook": "Ve y sé visto. La diferencia entre un percance y llegar a casa.",
         "short_desc": "Kit LED H4 con Canbus anti-error, 6000K luz blanca, 200% más brillo que halógena. Instalación plug & play en 5 minutos.",
         "features": [
-            ("💡", "200% Más Brillo", "2,800 lumens vs. 1,100 lumens de la halógena estándar H4"),
-            ("🔌", "Canbus Anti-error", "Resistencia interna que previene códigos de error en tablero"),
-            ("❄️", "6000K Luz Día", "Temperatura 6000K — máxima visibilidad en lluvia y noche"),
-            ("💧", "IP68 Sellado", "Resistente a lluvia, polvo, lavados a presión"),
+            (ico("bolt"), "200% Más Brillo", "2,800 lumens vs. 1,100 lumens de la halógena estándar H4"),
+            (ico("settings"), "Canbus Anti-error", "Resistencia interna que previene códigos de error en tablero"),
+            (ico("eye"), "6000K Luz Día", "Temperatura 6000K — máxima visibilidad en lluvia y noche"),
+            (ico("droplet"), "IP68 Sellado", "Resistente a lluvia, polvo, lavados a presión"),
         ],
         "specs": [
             ("Base", "H4 (bi-foco: cruce y carretera)"),
@@ -392,15 +419,15 @@ PRODUCTS = [
         "img2": "1769537754999-724044ec2e32",  # cadena/rueda ✅
         "img3": "1558981806-ec527fa84c39",     # racing ✅
         "bg":   "1558981806-ec527fa84c39",     # racing
-        "badge": "🇫🇷 Michelin",
+        "badge": "Michelin",
         "stars": "4.9", "reviews_count": "167",
         "hook": "La única llanta que tu moto necesita. Para todo clima, todo asfalto.",
         "short_desc": "Llanta trasera Michelin Pilot Street 2, compuesto 2CT para clima tropical. Freno en mojado mejorado +20%, duración +30%.",
         "features": [
-            ("🌧️", "Freno Mojado +20%", "Compuesto 2CT del mismo linaje que las Pilot Power MotoGP"),
-            ("📐", "Durabilidad +30%", "Centro duro para km de autopista, hombros blandos para curvas"),
-            ("🏙️", "Urban + Highway", "Perfilado para pavimento latinoamericano: baches, adoquín, ruta"),
-            ("🌡️", "Clima Tropical", "Formulado para temperaturas 20°C–40°C del litoral y sierra"),
+            (ico("droplet"), "Freno Mojado +20%", "Compuesto 2CT del mismo linaje que las Pilot Power MotoGP"),
+            (ico("layers"), "Durabilidad +30%", "Centro duro para km de autopista, hombros blandos para curvas"),
+            (ico("flag"), "Urban + Highway", "Perfilado para pavimento latinoamericano: baches, adoquín, ruta"),
+            (ico("wind"), "Clima Tropical", "Formulado para temperaturas 20°C–40°C del litoral y sierra"),
         ],
         "specs": [
             ("Medida", "140/70-17 TL"), ("Posición", "Trasera"),
@@ -627,6 +654,7 @@ CSS = """
       font-size:14px; font-weight:800; letter-spacing:.04em;
       border:1.5px solid rgba(155,196,42,.4); cursor:pointer;
       transition:all .2s; font-family:'Inter Tight',sans-serif;
+      display:flex; align-items:center; justify-content:center; gap:8px;
     }
     .btn-add:hover { background:rgba(155,196,42,.2); border-color:var(--green); }
     .btn-buy {
@@ -649,7 +677,7 @@ CSS = """
       border-right:1px solid var(--card-border);
     }
     .trust-item:last-child { border-right:none; }
-    .trust-icon { font-size:22px; margin-bottom:4px; }
+    .trust-icon { display:flex; justify-content:center; align-items:center; margin-bottom:4px; min-height:24px; }
     .trust-label { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
 
     .sku-line { font-size:11px; color:rgba(255,255,255,.3); display:flex; gap:8px; }
@@ -661,7 +689,7 @@ CSS = """
     }
     .features-band-inner { display:grid; grid-template-columns:repeat(4,1fr); gap:40px; max-width:1400px; margin:0 auto; }
     .feat { display:flex; gap:16px; align-items:flex-start; }
-    .feat-icon { font-size:28px; flex-shrink:0; margin-top:2px; }
+    .feat-icon { width:36px; height:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
     .feat-title { font-size:14px; font-weight:800; letter-spacing:-.01em; margin-bottom:4px; }
     .feat-desc { font-size:12px; color:var(--muted); line-height:1.65; }
 
@@ -748,6 +776,7 @@ CSS = """
       background:transparent; border:1.5px solid rgba(155,196,42,.4);
       color:var(--green); font-size:13px; font-weight:700;
       cursor:pointer; font-family:'Inter Tight',sans-serif; transition:all .2s;
+      display:flex; align-items:center; gap:6px;
     }
     .sticky-add:hover { background:rgba(155,196,42,.1); }
     .sticky-buy {
@@ -909,7 +938,7 @@ def generate(p, i):
 
     reviews = "".join(f"""<div class="review-card">
         <div class="review-header">
-          <div><div class="reviewer-name">{r[0]}</div><div class="reviewer-loc">📍 {r[1]}</div></div>
+          <div><div class="reviewer-name">{r[0]}</div><div class="reviewer-loc">{ico("pin")} {r[1]}</div></div>
           <div class="review-stars">{"★" * r[2]}</div>
         </div>
         <p class="review-text">"{r[3]}"</p>
@@ -943,7 +972,7 @@ def generate(p, i):
   </ul>
   <div class="nav-right">
     <a href="../checkout.html?{ck}" class="cart-btn">
-      🛒 Carrito
+      {ico("cart",16)} Carrito
       <span class="cart-count" id="cartCount">0</span>
     </a>
   </div>
@@ -1018,20 +1047,20 @@ def generate(p, i):
           <span class="qty-num" id="qtyNum">1</span>
           <button class="qty-btn" onclick="chQty(1)">+</button>
         </div>
-        <button class="btn-add" onclick="addCart()">🛒 Agregar</button>
-        <a href="../checkout.html?{ck}" class="btn-buy">⚡ Comprar</a>
+        <button class="btn-add" onclick="addCart()">{ico("cart",16)} Agregar</button>
+        <a href="../checkout.html?{ck}" class="btn-buy">Comprar</a>
       </div>
     </div>
 
     <div class="trust-strip">
-      <div class="trust-item"><div class="trust-icon">🚚</div><div class="trust-label">Envío 48h</div></div>
-      <div class="trust-item"><div class="trust-icon">🔒</div><div class="trust-label">Pago Seguro</div></div>
-      <div class="trust-item"><div class="trust-icon">↩️</div><div class="trust-label">30 Días</div></div>
-      <div class="trust-item"><div class="trust-icon">📞</div><div class="trust-label">Soporte 24/7</div></div>
+      <div class="trust-item"><div class="trust-icon">{ico("truck",20)}</div><div class="trust-label">Envío 48h</div></div>
+      <div class="trust-item"><div class="trust-icon">{ico("lock_g",20)}</div><div class="trust-label">Pago Seguro</div></div>
+      <div class="trust-item"><div class="trust-icon">{ico("return",20)}</div><div class="trust-label">30 Días</div></div>
+      <div class="trust-item"><div class="trust-icon">{ico("phone",20)}</div><div class="trust-label">Soporte 24/7</div></div>
     </div>
 
     <div class="sku-line">
-      <span>✅ En stock</span><span>·</span><span>SKU: {p['sku']}</span>
+      <span style="display:inline-flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0"></span>En stock</span><span>·</span><span>SKU: {p['sku']}</span>
     </div>
   </div>
 
@@ -1085,13 +1114,13 @@ def generate(p, i):
     <div class="sticky-price">${p['price']}</div>
   </div>
   <div class="sticky-btns">
-    <button class="sticky-add" onclick="addCart()">🛒 Agregar al carrito</button>
-    <a href="../checkout.html?{ck}" class="sticky-buy">⚡ Comprar ahora</a>
+    <button class="sticky-add" onclick="addCart()">{ico("cart",16)} Agregar al carrito</button>
+    <a href="../checkout.html?{ck}" class="sticky-buy">Comprar ahora</a>
   </div>
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast">✅ <span id="toastMsg">Agregado al carrito</span></div>
+<div class="toast" id="toast"><span id="toastMsg">Agregado al carrito</span></div>
 
 <script>
   let qty=1;
@@ -1102,7 +1131,7 @@ def generate(p, i):
   function addCart(){{
     cart+=qty; localStorage.setItem('alfapro_cart',cart);
     document.getElementById('cartCount').textContent=cart;
-    showToast('{p["name"].replace("'","\\'")} — {p["price"]} agregado ✅');
+    showToast('{p["name"].replace("'","\\'")} — {p["price"]} agregado');
   }}
   function showToast(m){{
     const t=document.getElementById('toast');

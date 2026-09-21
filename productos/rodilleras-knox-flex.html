@@ -211,6 +211,7 @@
       font-size:14px; font-weight:800; letter-spacing:.04em;
       border:1.5px solid rgba(155,196,42,.4); cursor:pointer;
       transition:all .2s; font-family:'Inter Tight',sans-serif;
+      display:flex; align-items:center; justify-content:center; gap:8px;
     }
     .btn-add:hover { background:rgba(155,196,42,.2); border-color:var(--green); }
     .btn-buy {
@@ -233,7 +234,7 @@
       border-right:1px solid var(--card-border);
     }
     .trust-item:last-child { border-right:none; }
-    .trust-icon { font-size:22px; margin-bottom:4px; }
+    .trust-icon { display:flex; justify-content:center; align-items:center; margin-bottom:4px; min-height:24px; }
     .trust-label { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
 
     .sku-line { font-size:11px; color:rgba(255,255,255,.3); display:flex; gap:8px; }
@@ -245,7 +246,7 @@
     }
     .features-band-inner { display:grid; grid-template-columns:repeat(4,1fr); gap:40px; max-width:1400px; margin:0 auto; }
     .feat { display:flex; gap:16px; align-items:flex-start; }
-    .feat-icon { font-size:28px; flex-shrink:0; margin-top:2px; }
+    .feat-icon { width:36px; height:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
     .feat-title { font-size:14px; font-weight:800; letter-spacing:-.01em; margin-bottom:4px; }
     .feat-desc { font-size:12px; color:var(--muted); line-height:1.65; }
 
@@ -332,6 +333,7 @@
       background:transparent; border:1.5px solid rgba(155,196,42,.4);
       color:var(--green); font-size:13px; font-weight:700;
       cursor:pointer; font-family:'Inter Tight',sans-serif; transition:all .2s;
+      display:flex; align-items:center; gap:6px;
     }
     .sticky-add:hover { background:rgba(155,196,42,.1); }
     .sticky-buy {
@@ -389,7 +391,7 @@
   </ul>
   <div class="nav-right">
     <a href="../checkout.html?producto=rodilleras-knox-flex&nombre=Rodilleras+Knox+Flex-Pro+CE+Nivel+2&precio=79.99&img=1636761358770-009ce3957519&cat=Accesorios+Piloto" class="cart-btn">
-      🛒 Carrito
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Carrito
       <span class="cart-count" id="cartCount">0</span>
     </a>
   </div>
@@ -406,7 +408,7 @@
       <a href="../index.html#categorias">Accesorios Piloto</a><span>/</span>
       <span style="color:rgba(255,255,255,.7)">Rodilleras Knox Flex-Pro CE Nivel 2</span>
     </div>
-    <div class="atmos-badge">🛡️ CE Nivel 2</div>
+    <div class="atmos-badge">CE Nivel 2</div>
     <h1 class="atmos-title">Rodilleras Knox Flex-Pro CE Nivel <em>2</em></h1>
   </div>
 </div>
@@ -470,20 +472,20 @@
           <span class="qty-num" id="qtyNum">1</span>
           <button class="qty-btn" onclick="chQty(1)">+</button>
         </div>
-        <button class="btn-add" onclick="addCart()">🛒 Agregar</button>
-        <a href="../checkout.html?producto=rodilleras-knox-flex&nombre=Rodilleras+Knox+Flex-Pro+CE+Nivel+2&precio=79.99&img=1636761358770-009ce3957519&cat=Accesorios+Piloto" class="btn-buy">⚡ Comprar</a>
+        <button class="btn-add" onclick="addCart()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Agregar</button>
+        <a href="../checkout.html?producto=rodilleras-knox-flex&nombre=Rodilleras+Knox+Flex-Pro+CE+Nivel+2&precio=79.99&img=1636761358770-009ce3957519&cat=Accesorios+Piloto" class="btn-buy">Comprar</a>
       </div>
     </div>
 
     <div class="trust-strip">
-      <div class="trust-item"><div class="trust-icon">🚚</div><div class="trust-label">Envío 48h</div></div>
-      <div class="trust-item"><div class="trust-icon">🔒</div><div class="trust-label">Pago Seguro</div></div>
-      <div class="trust-item"><div class="trust-icon">↩️</div><div class="trust-label">30 Días</div></div>
-      <div class="trust-item"><div class="trust-icon">📞</div><div class="trust-label">Soporte 24/7</div></div>
+      <div class="trust-item"><div class="trust-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><div class="trust-label">Envío 48h</div></div>
+      <div class="trust-item"><div class="trust-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div class="trust-label">Pago Seguro</div></div>
+      <div class="trust-item"><div class="trust-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg></div><div class="trust-label">30 Días</div></div>
+      <div class="trust-item"><div class="trust-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 3.09 9.81a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 2 .84h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L6.91 8.21a16 16 0 0 0 6.29 6.29l1.53-1.34a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><div class="trust-label">Soporte 24/7</div></div>
     </div>
 
     <div class="sku-line">
-      <span>✅ En stock</span><span>·</span><span>SKU: ALF-PIL-002</span>
+      <span style="display:inline-flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0"></span>En stock</span><span>·</span><span>SKU: ALF-PIL-002</span>
     </div>
   </div>
 
@@ -493,16 +495,16 @@
 <section class="features-band">
   <div class="features-band-inner">
     <div class="feat">
-        <div class="feat-icon">🦵</div>
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9BC42A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
         <div><div class="feat-title">CE Nivel 2</div><div class="feat-desc">La máxima certificación para protecciones independientes</div></div>
       </div><div class="feat">
-        <div class="feat-icon">🤸</div>
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9BC42A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
         <div><div class="feat-title">Flex-Pro D3O</div><div class="feat-desc">Material flexible en movimiento, rígido en impacto</div></div>
       </div><div class="feat">
-        <div class="feat-icon">⚡</div>
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9BC42A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
         <div><div class="feat-title">Universal Fit</div><div class="feat-desc">Correas 360° ajustables, compatible con pantalón o piel</div></div>
       </div><div class="feat">
-        <div class="feat-icon">💧</div>
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9BC42A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
         <div><div class="feat-title">Resistente Agua</div><div class="feat-desc">Exterior ventilado + interior absorbente sin retención</div></div>
       </div>
   </div>
@@ -524,19 +526,19 @@
   <div id="reviews" class="tab-content">
     <div class="reviews-list"><div class="review-card">
         <div class="review-header">
-          <div><div class="reviewer-name">Germán E.</div><div class="reviewer-loc">📍 Ambato</div></div>
+          <div><div class="reviewer-name">Germán E.</div><div class="reviewer-loc"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Ambato</div></div>
           <div class="review-stars">★★★★★</div>
         </div>
         <p class="review-text">"Las uso dentro del jean y nadie nota que las llevo. Después de 8 horas en moto no me molestan. Ya no salgo sin ellas."</p>
       </div><div class="review-card">
         <div class="review-header">
-          <div><div class="reviewer-name">Valeria O.</div><div class="reviewer-loc">📍 Riobamba</div></div>
+          <div><div class="reviewer-name">Valeria O.</div><div class="reviewer-loc"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Riobamba</div></div>
           <div class="review-stars">★★★★★</div>
         </div>
         <p class="review-text">"Las compré tras caerme sin protecciones. Llegué bien pero fue susto. Ahora estas van puestas siempre."</p>
       </div><div class="review-card">
         <div class="review-header">
-          <div><div class="reviewer-name">Felipe N.</div><div class="reviewer-loc">📍 Manta</div></div>
+          <div><div class="reviewer-name">Felipe N.</div><div class="reviewer-loc"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Manta</div></div>
           <div class="review-stars">★★★★</div>
         </div>
         <p class="review-text">"Muy buenas rodilleras. Las tiras son un poco más complicadas de ajustar al principio pero después se vuelve automático."</p>
@@ -597,13 +599,13 @@
     <div class="sticky-price">$79.99</div>
   </div>
   <div class="sticky-btns">
-    <button class="sticky-add" onclick="addCart()">🛒 Agregar al carrito</button>
-    <a href="../checkout.html?producto=rodilleras-knox-flex&nombre=Rodilleras+Knox+Flex-Pro+CE+Nivel+2&precio=79.99&img=1636761358770-009ce3957519&cat=Accesorios+Piloto" class="sticky-buy">⚡ Comprar ahora</a>
+    <button class="sticky-add" onclick="addCart()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Agregar al carrito</button>
+    <a href="../checkout.html?producto=rodilleras-knox-flex&nombre=Rodilleras+Knox+Flex-Pro+CE+Nivel+2&precio=79.99&img=1636761358770-009ce3957519&cat=Accesorios+Piloto" class="sticky-buy">Comprar ahora</a>
   </div>
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast">✅ <span id="toastMsg">Agregado al carrito</span></div>
+<div class="toast" id="toast"><span id="toastMsg">Agregado al carrito</span></div>
 
 <script>
   let qty=1;
@@ -614,7 +616,7 @@
   function addCart(){
     cart+=qty; localStorage.setItem('alfapro_cart',cart);
     document.getElementById('cartCount').textContent=cart;
-    showToast('Rodilleras Knox Flex-Pro CE Nivel 2 — 79.99 agregado ✅');
+    showToast('Rodilleras Knox Flex-Pro CE Nivel 2 — 79.99 agregado');
   }
   function showToast(m){
     const t=document.getElementById('toast');
