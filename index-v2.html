@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Alfapro — Accesorios y Repuestos para Moto</title>
+  <meta name="description" content="Cascos, guantes, llantas y repuestos de moto premium. Envío a todo Ecuador."/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+    :root {
+      --bg:     #000000;
+      --bg2:    #0d0d0d;
+      --card:   #141414;
+      --card2:  #0a0a0a;
+      --accent: #D6EE01;
+      --accent-dim:  rgba(214,238,1,0.1);
+      --accent-glow: rgba(214,238,1,0.18);
+      --red:    #CC0000;
+      --white:  #FFFFFF;
+      --muted:  rgba(255,255,255,0.44);
+      --border: rgba(255,255,255,0.07);
+      --radius: 14px;
+      --pad:    80px;
+      --max:    1560px;
+      --ease:   cubic-bezier(0.6,0.14,0,1);
+    }
+    html { scroll-behavior:smooth; }
+    body {
+      font-family:'Poppins',sans-serif;
+      background:var(--bg); color:var(--white);
+      overflow-x:hidden; -webkit-font-smoothing:antialiased;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(32px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity 0.8s var(--ease),transform 0.8s var(--ease); }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    .rd1{transition-delay:.12s} .rd2{transition-delay:.24s} .rd3{transition-delay:.36s} .rd4{transition-delay:.48s}
+
+    /* ── NAV ── */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:300;
+      height:68px; display:flex; align-items:center; justify-content:space-between;
+      padding:0 var(--pad);
+      background:rgba(0,0,0,0.9); backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-logo { text-decoration:none; display:flex; align-items:center; }
+    .nav-logo img { height:40px; width:auto; }
+    .nav-links { display:flex; gap:36px; list-style:none; }
+    .nav-links a {
+      color:var(--muted); text-decoration:none; font-size:13px;
+      font-weight:500; letter-spacing:.06em;
+      padding:14px 0; display:inline-block; transition:color .2s;
+    }
+    .nav-links a:hover { color:var(--white); }
+    .nav-right { display:flex; align-items:center; gap:14px; }
+    .cart-btn {
+      position:relative; display:flex; align-items:center; gap:8px;
+      padding:10px 22px; border-radius:4px;
+      background:var(--red); color:#fff;
+      font-size:13px; font-weight:700; letter-spacing:.04em;
+      text-decoration:none; border:none; cursor:pointer;
+      font-family:'Poppins',sans-serif; transition:all .2s;
+    }
+    .cart-btn:hover { background:#e00000; transform:translateY(-1px); }
+    .cart-count {
+      position:absolute; top:-7px; right:-7px;
+      width:18px; height:18px; border-radius:50%;
+      background:var(--accent); color:#000;
+      font-size:10px; font-weight:900;
+      display:flex; align-items:center; justify-content:center;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position:relative; height:100vh; min-height:720px;
+      display:flex; align-items:flex-end; overflow:hidden;
+    }
+    .hero-bg {
+      position:absolute; inset:0;
+      background:url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=1920&q=85') center 40%/cover;
+      filter:brightness(.22) saturate(.5);
+      transform:scale(1.06);
+    }
+    .hero-overlay {
+      position:absolute; inset:0;
+      background:linear-gradient(to top, #000 0%, rgba(0,0,0,.5) 50%, rgba(0,0,0,.05) 100%);
+    }
+    .hero-orb {
+      position:absolute; top:10%; right:8%; pointer-events:none;
+      width:700px; height:700px; border-radius:50%;
+      background:radial-gradient(circle, rgba(214,238,1,.1) 0%, transparent 65%);
+      filter:blur(80px);
+    }
+    .hero-content {
+      position:relative; z-index:10;
+      width:100%; max-width:var(--max); margin:0 auto;
+      padding:0 var(--pad) 88px;
+    }
+    .hero-eyebrow {
+      display:flex; align-items:center; gap:14px;
+      font-size:11px; font-weight:700; letter-spacing:.22em; text-transform:uppercase;
+      color:var(--accent); margin-bottom:24px;
+      opacity:0; animation:fadeUp .8s var(--ease) .2s both;
+    }
+    .hero-eyebrow::before { content:''; width:28px; height:1px; background:var(--accent); }
+    .hero-title {
+      font-size:clamp(72px,9.5vw,136px);
+      font-weight:900; line-height:.88; letter-spacing:-.05em;
+      color:var(--accent);
+      opacity:0; animation:fadeUp .8s var(--ease) .35s both;
+    }
+    .hero-title span { color:#fff; display:block; }
+    .hero-sub {
+      font-size:16px; color:var(--muted); max-width:420px;
+      line-height:1.7; margin:28px 0 44px;
+      opacity:0; animation:fadeUp .8s var(--ease) .5s both;
+    }
+    .hero-actions {
+      display:flex; gap:16px; align-items:center;
+      opacity:0; animation:fadeUp .8s var(--ease) .65s both;
+    }
+    .btn-ghost {
+      display:inline-flex; align-items:center; gap:10px;
+      padding:14px 32px; border-radius:4px;
+      background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.28);
+      color:#fff; font-size:14px; font-weight:600;
+      text-decoration:none; backdrop-filter:blur(8px);
+      font-family:'Poppins',sans-serif; transition:all .2s;
+    }
+    .btn-ghost:hover { background:rgba(255,255,255,.24); }
+    .btn-accent {
+      display:inline-flex; align-items:center; gap:10px;
+      padding:14px 36px; border-radius:4px;
+      background:var(--accent); color:#000;
+      font-size:14px; font-weight:800; text-decoration:none;
+      font-family:'Poppins',sans-serif; transition:all .2s;
+    }
+    .btn-accent:hover { background:#e8ff00; transform:translateY(-2px); }
+    .hero-stats {
+      position:absolute; right:var(--pad); bottom:88px; z-index:10;
+      display:flex; flex-direction:column; gap:28px; text-align:right;
+      opacity:0; animation:fadeIn 1s ease 1s both;
+    }
+    .hero-stat-num { font-size:44px; font-weight:900; color:var(--accent); line-height:1; letter-spacing:-.05em; }
+    .hero-stat-lbl { font-size:11px; font-weight:500; color:var(--muted); letter-spacing:.12em; text-transform:uppercase; margin-top:2px; }
+
+    /* ── TICKER ── */
+    .ticker {
+      background:var(--accent); overflow:hidden; padding:14px 0;
+      border-top:1px solid rgba(0,0,0,.1);
+    }
+    .ticker-track {
+      display:flex; gap:0; white-space:nowrap;
+      animation:marquee 28s linear infinite;
+    }
+    .ticker-item {
+      display:inline-flex; align-items:center; gap:24px;
+      padding:0 40px;
+      font-size:12px; font-weight:800; letter-spacing:.14em;
+      text-transform:uppercase; color:#000;
+    }
+    .ticker-dot { width:5px; height:5px; border-radius:50%; background:#000; opacity:.4; }
+
+    /* ── SECTION HELPERS ── */
+    .section { padding:100px var(--pad); }
+    .container { max-width:var(--max); margin:0 auto; }
+    .overline {
+      display:flex; align-items:center; gap:12px;
+      font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+      color:var(--accent); margin-bottom:16px;
+    }
+    .overline::before { content:''; width:20px; height:1px; background:var(--accent); }
+    .section-title {
+      font-size:clamp(36px,4vw,56px); font-weight:900;
+      letter-spacing:-.04em; line-height:.95;
+    }
+    .section-title em { color:var(--accent); font-style:italic; font-weight:400; }
+    .link-arrow {
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:13px; font-weight:600; color:var(--muted);
+      text-decoration:none; transition:color .2s;
+    }
+    .link-arrow:hover { color:var(--white); }
+
+    /* ── FEATURES STRIP ── */
+    .features-strip {
+      background:var(--card2); border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+      padding:56px var(--pad);
+    }
+    .features-strip-inner {
+      max-width:var(--max); margin:0 auto;
+      display:grid; grid-template-columns:repeat(4,1fr); gap:48px;
+    }
+    .feat-item { display:flex; gap:16px; align-items:flex-start; }
+    .feat-icon-wrap {
+      width:44px; height:44px; border-radius:10px; flex-shrink:0;
+      background:var(--accent-dim); border:1px solid rgba(214,238,1,.18);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .feat-title { font-size:14px; font-weight:800; letter-spacing:-.01em; margin-bottom:4px; }
+    .feat-desc { font-size:12px; color:var(--muted); line-height:1.65; }
+
+    /* ── CATEGORIES ── */
+    .cats-section { padding:88px var(--pad) 0; border-top:1px solid var(--border); }
+    .cats-header {
+      display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:36px;
+    }
+    .cats-grid {
+      display:grid;
+      grid-template-columns:2fr 1fr 1fr 1fr;
+      grid-template-rows:280px;
+      gap:10px;
+    }
+    .cat-card {
+      position:relative; border-radius:var(--radius); overflow:hidden;
+      text-decoration:none; color:#fff; border:1px solid var(--border);
+      cursor:pointer;
+    }
+    .cat-bg {
+      position:absolute; inset:0;
+      background-size:cover; background-position:center;
+      filter:brightness(.3) saturate(.6);
+      transition:filter .6s var(--ease),transform .6s var(--ease);
+    }
+    .cat-card:hover .cat-bg { filter:brightness(.5) saturate(.8); transform:scale(1.05); }
+    .cat-overlay {
+      position:absolute; inset:0;
+      background:linear-gradient(to top,rgba(0,0,0,.92) 0%,transparent 55%);
+    }
+    .cat-body { position:absolute; bottom:0; left:0; right:0; padding:22px 20px; }
+    .cat-label {
+      font-size:10px; font-weight:700; letter-spacing:.18em;
+      text-transform:uppercase; color:var(--accent); margin-bottom:5px;
+    }
+    .cat-name { font-size:clamp(15px,1.5vw,20px); font-weight:800; letter-spacing:-.02em; line-height:1.1; }
+    .cat-count { font-size:12px; color:var(--muted); margin-top:4px; }
+    .cat-arrow {
+      position:absolute; top:14px; right:14px;
+      width:34px; height:34px; border-radius:50%;
+      background:rgba(255,255,255,.1);
+      display:flex; align-items:center; justify-content:center;
+      opacity:0; transition:opacity .2s; flex-shrink:0;
+    }
+    .cat-card:hover .cat-arrow { opacity:1; }
+
+    /* ── ORB STATS ── */
+    .orb-section {
+      position:relative; overflow:hidden;
+      background:var(--bg); border-top:1px solid var(--border);
+    }
+    .orb-blob {
+      position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+      width:800px; height:500px; border-radius:50%; pointer-events:none;
+      background:radial-gradient(ellipse, rgba(214,238,1,.09) 0%, rgba(139,157,38,.04) 40%, transparent 70%);
+      filter:blur(80px);
+    }
+    .orb-stats-grid {
+      position:relative; z-index:2;
+      display:grid; grid-template-columns:repeat(4,1fr);
+      max-width:var(--max); margin:0 auto;
+    }
+    .orb-stat {
+      text-align:center; padding:80px 0;
+      border-right:1px solid var(--border);
+    }
+    .orb-stat:last-child { border-right:none; }
+    .orb-stat-num {
+      font-size:clamp(52px,6vw,80px); font-weight:900;
+      color:var(--accent); letter-spacing:-.06em; line-height:1; display:block;
+    }
+    .orb-stat-lbl {
+      font-size:12px; font-weight:500; color:var(--muted);
+      letter-spacing:.1em; text-transform:uppercase; margin-top:10px; display:block;
+    }
+
+    /* ── PRODUCTS ── */
+    .products-section { padding:100px var(--pad); }
+    .products-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:48px; }
+    .products-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    .prod-card {
+      background:var(--card); border-radius:var(--radius);
+      overflow:hidden; border:1px solid var(--border);
+      text-decoration:none; color:#fff;
+      display:flex; flex-direction:column;
+      transition:border-color .25s,transform .3s var(--ease);
+    }
+    .prod-card:hover { border-color:rgba(214,238,1,.3); transform:translateY(-6px); }
+    .prod-img { position:relative; aspect-ratio:4/3; overflow:hidden; }
+    .prod-img img {
+      width:100%; height:100%; object-fit:cover; filter:brightness(.78);
+      transition:transform .6s var(--ease),filter .3s;
+    }
+    .prod-card:hover .prod-img img { transform:scale(1.07); filter:brightness(.95); }
+    .prod-badge {
+      position:absolute; top:12px; left:12px;
+      padding:4px 10px; border-radius:3px;
+      font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+      background:var(--red); color:#fff;
+    }
+    .prod-body { padding:16px 16px 0; flex:1; display:flex; flex-direction:column; gap:8px; }
+    .prod-cat { font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); }
+    .prod-name { font-size:14px; font-weight:700; letter-spacing:-.01em; line-height:1.3; }
+    .prod-price-row { display:flex; align-items:baseline; gap:10px; margin-top:auto; padding-bottom:16px; }
+    .prod-price { font-size:22px; font-weight:900; color:var(--accent); letter-spacing:-.03em; }
+    .prod-original { font-size:13px; color:var(--muted); text-decoration:line-through; }
+    .prod-actions { display:flex; gap:8px; padding:0 16px 16px; }
+    .prod-btn-add {
+      flex:1; padding:11px; border-radius:6px;
+      background:var(--red); color:#fff;
+      font-size:12px; font-weight:700; letter-spacing:.04em;
+      border:none; cursor:pointer; font-family:'Poppins',sans-serif;
+      display:flex; align-items:center; justify-content:center; gap:6px;
+      transition:background .2s;
+    }
+    .prod-btn-add:hover { background:#e00000; }
+    .prod-btn-save {
+      width:40px; height:40px; border-radius:6px; flex-shrink:0;
+      background:rgba(255,255,255,.05); border:1px solid var(--border);
+      color:var(--muted); cursor:pointer;
+      display:flex; align-items:center; justify-content:center; transition:all .2s;
+    }
+    .prod-btn-save:hover { border-color:rgba(214,238,1,.4); color:var(--accent); }
+
+    /* ── OVERSIZE FEATURE ── */
+    .oversize-section {
+      position:relative; overflow:hidden;
+      padding:120px var(--pad);
+      background:var(--bg2);
+      border-top:1px solid var(--border);
+    }
+    .oversize-orb {
+      position:absolute; top:-120px; right:-80px; pointer-events:none;
+      width:700px; height:700px; border-radius:50%;
+      background:radial-gradient(circle, rgba(204,0,0,.1) 0%, transparent 65%);
+      filter:blur(90px);
+    }
+    .oversize-bg-text {
+      position:absolute; top:0; left:0; right:0; pointer-events:none; overflow:hidden; z-index:0;
+      font-size:clamp(100px,16vw,220px); font-weight:900; letter-spacing:-.06em;
+      line-height:.8; color:transparent;
+      -webkit-text-stroke:1px rgba(255,255,255,.055);
+      user-select:none; padding:var(--pad);
+    }
+    .oversize-inner {
+      position:relative; z-index:2;
+      display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center;
+    }
+    .over-overline { color:var(--red); }
+    .over-overline::before { background:var(--red); }
+    .oversize-title {
+      font-size:clamp(36px,3.8vw,56px); font-weight:900;
+      letter-spacing:-.04em; line-height:.95; margin-bottom:20px;
+    }
+    .oversize-desc { font-size:15px; color:var(--muted); line-height:1.8; max-width:440px; margin-bottom:36px; }
+    .oversize-bullets { display:flex; flex-direction:column; gap:14px; margin-bottom:40px; }
+    .oversize-bullet { display:flex; align-items:center; gap:12px; font-size:14px; font-weight:500; }
+    .bullet-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); flex-shrink:0; }
+    .oversize-img {
+      border-radius:var(--radius); overflow:hidden; border:1px solid var(--border);
+      aspect-ratio:4/3; position:relative;
+      box-shadow:0 40px 80px rgba(0,0,0,.7);
+    }
+    .oversize-img img { width:100%; height:100%; object-fit:cover; filter:brightness(.7); }
+
+    /* ── PROMO BAND ── */
+    .promo-wrap { margin:0 var(--pad) 100px; }
+    .promo-band {
+      border-radius:var(--radius);
+      background:linear-gradient(135deg,#1a1a00 0%,#0a0a00 100%);
+      border:1px solid rgba(214,238,1,.18);
+      padding:64px 72px;
+      display:grid; grid-template-columns:1fr auto; gap:48px; align-items:center;
+      position:relative; overflow:hidden;
+    }
+    .promo-orb {
+      position:absolute; right:-80px; top:50%; transform:translateY(-50%); pointer-events:none;
+      width:500px; height:500px; border-radius:50%;
+      background:radial-gradient(circle, rgba(214,238,1,.14) 0%, transparent 65%);
+      filter:blur(70px);
+    }
+    .promo-eyebrow { font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); margin-bottom:14px; }
+    .promo-title { font-size:clamp(32px,3vw,48px); font-weight:900; letter-spacing:-.04em; line-height:.95; }
+    .promo-sub { font-size:15px; color:var(--muted); margin-top:12px; max-width:520px; }
+    .promo-cta { position:relative; z-index:2; flex-shrink:0; }
+
+    /* ── LOCATIONS ── */
+    .locations-section { padding:100px var(--pad); border-top:1px solid var(--border); }
+    .locations-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:48px; }
+    .locations-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .loc-card {
+      background:var(--card); border-radius:var(--radius); padding:32px 28px;
+      border:1px solid var(--border); transition:border-color .2s,transform .25s;
+    }
+    .loc-card:hover { border-color:rgba(214,238,1,.3); transform:translateY(-4px); }
+    .loc-city { font-size:24px; font-weight:900; letter-spacing:-.03em; }
+    .loc-divider { width:28px; height:2px; background:var(--accent); margin:16px 0; }
+    .loc-row { display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; font-size:13px; color:var(--muted); line-height:1.6; }
+
+    /* ── FOOTER ── */
+    footer {
+      background:#000; border-top:1px solid var(--border);
+      padding:64px var(--pad) 32px;
+    }
+    .footer-top {
+      display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:48px; margin-bottom:48px;
+    }
+    .footer-logo img { height:34px; margin-bottom:16px; display:block; }
+    .footer-desc { font-size:13px; color:var(--muted); line-height:1.75; max-width:280px; }
+    .footer-col-title { font-size:11px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin-bottom:16px; }
+    .footer-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
+    .footer-list a { font-size:13px; color:var(--muted); text-decoration:none; transition:color .2s; }
+    .footer-list a:hover { color:var(--accent); }
+    .footer-bottom {
+      border-top:1px solid var(--border); padding-top:24px;
+      display:flex; justify-content:space-between; align-items:center;
+    }
+    .footer-copy { font-size:12px; color:var(--muted); }
+    .footer-badge {
+      padding:4px 14px; border-radius:999px;
+      background:var(--accent-dim); border:1px solid rgba(214,238,1,.2);
+      font-size:11px; font-weight:700; color:var(--accent); letter-spacing:.06em;
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position:fixed; bottom:32px; right:32px; z-index:999;
+      padding:14px 22px; border-radius:10px;
+      background:var(--card); border:1px solid rgba(214,238,1,.4);
+      font-size:14px; font-weight:600;
+      transform:translateY(60px); opacity:0;
+      transition:all .3s cubic-bezier(.34,1.56,.64,1);
+      pointer-events:none;
+    }
+    .toast.show { transform:translateY(0); opacity:1; }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:1200px) {
+      :root{--pad:48px}
+      .products-grid{grid-template-columns:repeat(3,1fr)}
+    }
+    @media(max-width:1024px) {
+      :root{--pad:32px}
+      nav{padding:0 32px}
+      .cats-grid{grid-template-columns:1fr 1fr;grid-template-rows:200px 200px}
+      .cat-card:first-child{grid-column:span 2}
+      .features-strip-inner{grid-template-columns:repeat(2,1fr);gap:28px}
+      .orb-stats-grid{grid-template-columns:repeat(2,1fr)}
+      .orb-stat:nth-child(2){border-right:none}
+      .oversize-inner{grid-template-columns:1fr}
+      .footer-top{grid-template-columns:1fr 1fr}
+      .locations-grid{grid-template-columns:1fr 1fr}
+      .promo-band{grid-template-columns:1fr}
+    }
+    @media(max-width:768px) {
+      nav{padding:0 20px;height:60px}
+      .nav-links,.hero-stats{display:none}
+      .hero-content{padding:0 20px 64px}
+      .cats-section{padding:64px 20px 0}
+      .cats-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;height:240px;gap:10px}
+      .cats-grid::-webkit-scrollbar{display:none}
+      .cat-card{flex:0 0 200px;min-width:200px;scroll-snap-align:start}
+      .cat-card:first-child{grid-column:unset}
+      .products-section{padding:64px 20px}
+      .products-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+      .features-strip{padding:48px 20px}
+      .features-strip-inner{grid-template-columns:1fr 1fr}
+      .oversize-section{padding:64px 20px}
+      .oversize-bg-text{font-size:clamp(60px,14vw,100px)}
+      .locations-section{padding:64px 20px}
+      .locations-grid{grid-template-columns:1fr}
+      .promo-wrap{margin:0 20px 64px}
+      .promo-band{padding:40px 28px}
+      footer{padding:48px 20px 28px}
+      .footer-top{grid-template-columns:1fr;gap:28px}
+      .orb-stats-grid{grid-template-columns:repeat(2,1fr)}
+      .section{padding:64px 20px}
+    }
+    @media(max-width:480px) {
+      .hero-actions{flex-direction:column;align-items:flex-start}
+      .products-grid{gap:8px}
+      .features-strip-inner{grid-template-columns:1fr}
+      .footer-bottom{flex-direction:column;gap:12px;text-align:center}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index-v2.html" class="nav-logo">
+    <img src="logo.png" alt="Alfapro" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+    <span style="display:none;font-size:22px;font-weight:900;letter-spacing:-.04em;color:#fff">ALFAPRO</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#categorias">Categorías</a></li>
+    <li><a href="#productos">Productos</a></li>
+    <li><a href="#nosotros">Nosotros</a></li>
+    <li><a href="#sucursales">Sucursales</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="checkout.html" class="cart-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      Carrito
+      <span class="cart-count" id="cartCount">0</span>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-orb"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Ecuador — Motos &amp; Accesorios</div>
+    <h1 class="hero-title">
+      TU MOTO.
+      <span>PRO NIVEL.</span>
+    </h1>
+    <p class="hero-sub">Cascos, guantes, llantas y repuestos de las marcas que los pilotos reales eligen. Envío a todo Ecuador.</p>
+    <div class="hero-actions">
+      <a href="#productos" class="btn-accent">
+        Ver catálogo
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="#categorias" class="btn-ghost">Explorar categorías</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div>
+      <div class="hero-stat-num">15+</div>
+      <div class="hero-stat-lbl">Años en el mercado</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">5K+</div>
+      <div class="hero-stat-lbl">Clientes activos</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">50+</div>
+      <div class="hero-stat-lbl">Modelos disponibles</div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track" aria-hidden="true">
+    <span class="ticker-item">Envío nacional en 48h<span class="ticker-dot"></span></span>
+    <span class="ticker-item">LS2 — Alpinestars — Motul — Michelin — DID<span class="ticker-dot"></span></span>
+    <span class="ticker-item">Pago seguro — Devolución 30 días<span class="ticker-dot"></span></span>
+    <span class="ticker-item">Cascos CE ECE 22.06 — Guantes CE Nivel 1<span class="ticker-dot"></span></span>
+    <span class="ticker-item">Soporte técnico 24/7 — Asesoría sin costo<span class="ticker-dot"></span></span>
+    <span class="ticker-item">Envío nacional en 48h<span class="ticker-dot"></span></span>
+    <span class="ticker-item">LS2 — Alpinestars — Motul — Michelin — DID<span class="ticker-dot"></span></span>
+    <span class="ticker-item">Pago seguro — Devolución 30 días<span class="ticker-dot"></span></span>
+    <span class="ticker-item">Cascos CE ECE 22.06 — Guantes CE Nivel 1<span class="ticker-dot"></span></span>
+    <span class="ticker-item">Soporte técnico 24/7 — Asesoría sin costo<span class="ticker-dot"></span></span>
+  </div>
+</div>
+
+<!-- FEATURES STRIP -->
+<div class="features-strip">
+  <div class="features-strip-inner">
+    <div class="feat-item reveal">
+      <div class="feat-icon-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D6EE01" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      </div>
+      <div>
+        <div class="feat-title">Envío en 48 horas</div>
+        <div class="feat-desc">A todo Ecuador. Guayaquil, Quito, Cuenca y ciudades intermedias.</div>
+      </div>
+    </div>
+    <div class="feat-item reveal rd1">
+      <div class="feat-icon-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D6EE01" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div>
+        <div class="feat-title">Productos Certificados</div>
+        <div class="feat-desc">Solo marcas con homologación DOT, ECE 22.06 y CE reconocidas internacionalmente.</div>
+      </div>
+    </div>
+    <div class="feat-item reveal rd2">
+      <div class="feat-icon-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D6EE01" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      </div>
+      <div>
+        <div class="feat-title">Precios Reales</div>
+        <div class="feat-desc">Sin inflar para descontar. El precio que ves es el precio que pagas.</div>
+      </div>
+    </div>
+    <div class="feat-item reveal rd3">
+      <div class="feat-icon-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D6EE01" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 3.09 9.81a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 2 .84h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L6.91 8.21a16 16 0 0 0 6.29 6.29l1.53-1.34a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <div>
+        <div class="feat-title">Soporte Técnico</div>
+        <div class="feat-desc">Asesoría de compatibilidad sin costo. Sabemos qué sirve para tu moto.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="cats-section" id="categorias">
+  <div class="cats-header reveal">
+    <div>
+      <div class="overline">Colección</div>
+      <h2 class="section-title">Lo que tu moto <em>necesita</em></h2>
+    </div>
+    <a href="#productos" class="link-arrow">
+      Ver todo
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+  <div class="cats-grid reveal">
+    <!-- Cascos — large -->
+    <a href="#productos" class="cat-card">
+      <div class="cat-bg" style="background-image:url('https://images.unsplash.com/photo-1571819507488-0e1dfe7cc22d?w=900&q=80')"></div>
+      <div class="cat-overlay"></div>
+      <div class="cat-body">
+        <div class="cat-label">Protección</div>
+        <div class="cat-name">Cascos Integrales y Modulares</div>
+        <div class="cat-count">12 modelos disponibles</div>
+      </div>
+      <div class="cat-arrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </a>
+    <!-- Accesorios Piloto -->
+    <a href="#productos" class="cat-card">
+      <div class="cat-bg" style="background-image:url('https://images.unsplash.com/photo-1545284662-c3dda8bd045d?w=640&q=80')"></div>
+      <div class="cat-overlay"></div>
+      <div class="cat-body">
+        <div class="cat-label">Piloto</div>
+        <div class="cat-name">Guantes &amp; Rodilleras</div>
+        <div class="cat-count">8 modelos</div>
+      </div>
+      <div class="cat-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </a>
+    <!-- Llantas -->
+    <a href="#productos" class="cat-card">
+      <div class="cat-bg" style="background-image:url('https://images.unsplash.com/photo-1763142185959-be6f3dbdd31a?w=640&q=80')"></div>
+      <div class="cat-overlay"></div>
+      <div class="cat-body">
+        <div class="cat-label">Rodamiento</div>
+        <div class="cat-name">Llantas Michelin</div>
+        <div class="cat-count">6 medidas</div>
+      </div>
+      <div class="cat-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </a>
+    <!-- Partes -->
+    <a href="#productos" class="cat-card">
+      <div class="cat-bg" style="background-image:url('https://images.unsplash.com/photo-1769537754999-724044ec2e32?w=640&q=80')"></div>
+      <div class="cat-overlay"></div>
+      <div class="cat-body">
+        <div class="cat-label">Motor</div>
+        <div class="cat-name">Partes &amp; Repuestos</div>
+        <div class="cat-count">20+ referencias</div>
+      </div>
+      <div class="cat-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </a>
+  </div>
+</section>
+
+<!-- ORB STATS -->
+<div class="orb-section" style="padding:0">
+  <div class="orb-blob"></div>
+  <div class="orb-stats-grid">
+    <div class="orb-stat reveal">
+      <span class="orb-stat-num">15+</span>
+      <span class="orb-stat-lbl">Años en Ecuador</span>
+    </div>
+    <div class="orb-stat reveal rd1">
+      <span class="orb-stat-num">5K+</span>
+      <span class="orb-stat-lbl">Clientes satisfechos</span>
+    </div>
+    <div class="orb-stat reveal rd2">
+      <span class="orb-stat-num">50+</span>
+      <span class="orb-stat-lbl">Modelos en stock</span>
+    </div>
+    <div class="orb-stat reveal rd3">
+      <span class="orb-stat-num">100%</span>
+      <span class="orb-stat-lbl">Productos originales</span>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products-section" id="productos">
+  <div class="container">
+    <div class="products-header reveal">
+      <div>
+        <div class="overline">Lo más pedido</div>
+        <h2 class="section-title">Productos <em>destacados</em></h2>
+      </div>
+      <a href="#" class="link-arrow">
+        Ver todos
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </div>
+    <div class="products-grid">
+
+      <!-- 1 -->
+      <div class="prod-card reveal">
+        <div class="prod-img">
+          <img src="https://images.unsplash.com/photo-1571819507488-0e1dfe7cc22d?w=640&q=80" alt="Casco LS2 FF800" loading="lazy"/>
+          <div class="prod-badge">Más Vendido</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Cascos</div>
+          <div class="prod-name">Casco Integral LS2 FF800 Storm II</div>
+          <div class="prod-price-row">
+            <span class="prod-price">$189.99</span>
+            <span class="prod-original">$219.99</span>
+          </div>
+        </div>
+        <div class="prod-actions">
+          <button class="prod-btn-add" onclick="addToCart('Casco LS2 FF800','189.99')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Agregar
+          </button>
+          <a href="productos/casco-ls2-ff800.html" class="prod-btn-save" aria-label="Ver producto">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="prod-card reveal rd1">
+        <div class="prod-img">
+          <img src="https://images.unsplash.com/photo-1611004061856-ccc3cbe944b2?w=640&q=80" alt="Casco LS2 FF906" loading="lazy"/>
+          <div class="prod-badge">Nuevo</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Cascos</div>
+          <div class="prod-name">Casco Modular LS2 FF906 Advant</div>
+          <div class="prod-price-row">
+            <span class="prod-price">$249.99</span>
+            <span class="prod-original">$289.99</span>
+          </div>
+        </div>
+        <div class="prod-actions">
+          <button class="prod-btn-add" onclick="addToCart('Casco LS2 FF906','249.99')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Agregar
+          </button>
+          <a href="productos/casco-ls2-ff906.html" class="prod-btn-save" aria-label="Ver producto">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="prod-card reveal rd2">
+        <div class="prod-img">
+          <img src="https://images.unsplash.com/photo-1545284662-c3dda8bd045d?w=640&q=80" alt="Guantes Alpinestars" loading="lazy"/>
+          <div class="prod-badge">Bestseller</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Accesorios Piloto</div>
+          <div class="prod-name">Guantes Alpinestars SP-8 v3</div>
+          <div class="prod-price-row">
+            <span class="prod-price">$54.99</span>
+            <span class="prod-original">$74.99</span>
+          </div>
+        </div>
+        <div class="prod-actions">
+          <button class="prod-btn-add" onclick="addToCart('Guantes Alpinestars','54.99')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Agregar
+          </button>
+          <a href="productos/guantes-alpinestars-sp8.html" class="prod-btn-save" aria-label="Ver producto">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="prod-card reveal rd3">
+        <div class="prod-img">
+          <img src="https://images.unsplash.com/photo-1763142185959-be6f3dbdd31a?w=640&q=80" alt="Llanta Michelin" loading="lazy"/>
+          <div class="prod-badge">Michelin</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Llantas</div>
+          <div class="prod-name">Llanta Michelin Pilot Street 2 140/70-17</div>
+          <div class="prod-price-row">
+            <span class="prod-price">$89.99</span>
+            <span class="prod-original">$119.99</span>
+          </div>
+        </div>
+        <div class="prod-actions">
+          <button class="prod-btn-add" onclick="addToCart('Llanta Michelin','89.99')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Agregar
+          </button>
+          <a href="productos/llanta-michelin-pilot.html" class="prod-btn-save" aria-label="Ver producto">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="prod-card reveal">
+        <div class="prod-img">
+          <img src="https://images.unsplash.com/photo-1711150943978-8d045550dd33?w=640&q=80" alt="Kit LED H4" loading="lazy"/>
+          <div class="prod-badge">Plug &amp; Play</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Eléctrico</div>
+          <div class="prod-name">Kit LED H4 Canbus 6000K Plug &amp; Play</div>
+          <div class="prod-price-row">
+            <span class="prod-price">$39.99</span>
+            <span class="prod-original">$59.99</span>
+          </div>
+        </div>
+        <div class="prod-actions">
+          <button class="prod-btn-add" onclick="addToCart('Kit LED H4','39.99')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Agregar
+          </button>
+          <a href="productos/kit-led-h4.html" class="prod-btn-save" aria-label="Ver producto">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div class="prod-card reveal rd1">
+        <div class="prod-img">
+          <img src="https://images.unsplash.com/photo-1746014995485-e8a698f39804?w=640&q=80" alt="Aceite Motul" loading="lazy"/>
+          <div class="prod-badge">100% Sint.</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Motor</div>
+          <div class="prod-name">Aceite Motul 7100 4T 10W-40 1L</div>
+          <div class="prod-price-row">
+            <span class="prod-price">$15.99</span>
+            <span class="prod-original">$21.99</span>
+          </div>
+        </div>
+        <div class="prod-actions">
+          <button class="prod-btn-add" onclick="addToCart('Aceite Motul 7100','15.99')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Agregar
+          </button>
+          <a href="productos/aceite-motul-7100.html" class="prod-btn-save" aria-label="Ver producto">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 7 -->
+      <div class="prod-card reveal rd2">
+        <div class="prod-img">
+          <img src="https://images.unsplash.com/photo-1769537754999-724044ec2e32?w=640&q=80" alt="Kit Cadena DID" loading="lazy"/>
+          <div class="prod-badge">Kit Completo</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Partes y Piezas</div>
+          <div class="prod-name">Kit Cadena DID 428VX + Piñón + Corona</div>
+          <div class="prod-price-row">
+            <span class="prod-price">$44.99</span>
+            <span class="prod-original">$64.99</span>
+          </div>
+        </div>
+        <div class="prod-actions">
+          <button class="prod-btn-add" onclick="addToCart('Kit Cadena DID','44.99')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Agregar
+          </button>
+          <a href="productos/kit-cadena-did-428.html" class="prod-btn-save" aria-label="Ver producto">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 8 -->
+      <div class="prod-card reveal rd3">
+        <div class="prod-img">
+          <img src="https://images.unsplash.com/photo-1636761358770-009ce3957519?w=640&q=80" alt="Rodilleras Knox" loading="lazy"/>
+          <div class="prod-badge">CE Nivel 2</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-cat">Accesorios Piloto</div>
+          <div class="prod-name">Rodilleras Knox Flex-Pro CE Nivel 2</div>
+          <div class="prod-price-row">
+            <span class="prod-price">$79.99</span>
+            <span class="prod-original">$99.99</span>
+          </div>
+        </div>
+        <div class="prod-actions">
+          <button class="prod-btn-add" onclick="addToCart('Rodilleras Knox','79.99')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Agregar
+          </button>
+          <a href="productos/rodilleras-knox-flex.html" class="prod-btn-save" aria-label="Ver producto">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- OVERSIZE FEATURE / ABOUT -->
+<section class="oversize-section" id="nosotros">
+  <div class="oversize-orb"></div>
+  <div class="oversize-bg-text" aria-hidden="true">ALFAPRO</div>
+  <div class="container">
+    <div class="oversize-inner">
+      <div>
+        <div class="overline over-overline reveal">Nuestra historia</div>
+        <h2 class="oversize-title reveal rd1">
+          Más de 15 años<br>equipando motos<br>en Ecuador.
+        </h2>
+        <p class="oversize-desc reveal rd2">
+          Nacimos en Quevedo cuando conseguir un casco homologado en Ecuador era una aventura. Hoy tenemos tres sucursales, stock real, y una red de más de 5,000 motoristas que confían en nosotros.
+        </p>
+        <div class="oversize-bullets reveal rd2">
+          <div class="oversize-bullet"><span class="bullet-dot"></span>Repuestos originales y certificados internacionalmente</div>
+          <div class="oversize-bullet"><span class="bullet-dot"></span>Servicio mecánico especializado en moto</div>
+          <div class="oversize-bullet"><span class="bullet-dot"></span>Asesoría personalizada sin costo</div>
+        </div>
+        <a href="#sucursales" class="btn-accent reveal rd3">
+          Ver sucursales
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+      <div class="oversize-img reveal rd2">
+        <img src="https://images.unsplash.com/photo-1636761358770-009ce3957519?w=900&q=85" alt="Taller Alfapro"/>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROMO BAND -->
+<div class="promo-wrap reveal">
+  <div class="promo-band">
+    <div class="promo-orb"></div>
+    <div>
+      <div class="promo-eyebrow">Oferta de la semana</div>
+      <div class="promo-title">Arma tu moto.<br>Define tu estilo.</div>
+      <div class="promo-sub">Pastillas EBC FA desde $19.99. Espejos CNC Racing desde $34.99. Stock limitado.</div>
+    </div>
+    <div class="promo-cta">
+      <a href="productos/pastillas-ebc-fa.html" class="btn-accent" style="white-space:nowrap">
+        Ver oferta
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- LOCATIONS -->
+<section class="locations-section" id="sucursales">
+  <div class="container">
+    <div class="locations-header reveal">
+      <div>
+        <div class="overline">Encuéntranos</div>
+        <h2 class="section-title">Nuestras <em>sucursales</em></h2>
+      </div>
+    </div>
+    <div class="locations-grid">
+      <div class="loc-card reveal">
+        <div class="loc-city">Quevedo</div>
+        <div class="loc-divider"></div>
+        <div class="loc-row">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Calle Bolívar 156 y Décima Primera, frente a Repuestos Vega
+        </div>
+        <div class="loc-row">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 3.09 9.81a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 2 .84h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L6.91 8.21a16 16 0 0 0 6.29 6.29l1.53-1.34a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          informesalfapro@gmail.com
+        </div>
+      </div>
+      <div class="loc-card reveal rd1">
+        <div class="loc-city">Guayaquil</div>
+        <div class="loc-divider"></div>
+        <div class="loc-row">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Av. de las Américas, local comercial zona norte
+        </div>
+        <div class="loc-row">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 3.09 9.81a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 2 .84h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L6.91 8.21a16 16 0 0 0 6.29 6.29l1.53-1.34a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          informesalfapro@gmail.com
+        </div>
+      </div>
+      <div class="loc-card reveal rd2">
+        <div class="loc-city">Santo Domingo</div>
+        <div class="loc-divider"></div>
+        <div class="loc-row">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Av. Quito km 1.5, junto al distribuidor Honda
+        </div>
+        <div class="loc-row">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 3.09 9.81a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 2 .84h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L6.91 8.21a16 16 0 0 0 6.29 6.29l1.53-1.34a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          informesalfapro@gmail.com
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <img src="logo.png" alt="Alfapro" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+        <span style="display:none;font-size:20px;font-weight:900;letter-spacing:-.04em;color:#fff">ALFAPRO</span>
+      </div>
+      <p class="footer-desc">Accesorios, repuestos y partes para moto premium. La referencia del motorista ecuatoriano desde hace más de 15 años.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Productos</div>
+      <ul class="footer-list">
+        <li><a href="#">Cascos</a></li>
+        <li><a href="#">Guantes</a></li>
+        <li><a href="#">Llantas</a></li>
+        <li><a href="#">Partes y Piezas</a></li>
+        <li><a href="#">Eléctrico</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Info</div>
+      <ul class="footer-list">
+        <li><a href="#">Sobre Alfapro</a></li>
+        <li><a href="#">Sucursales</a></li>
+        <li><a href="#">Devoluciones</a></li>
+        <li><a href="#">Garantías</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Contacto</div>
+      <ul class="footer-list">
+        <li><a href="mailto:informesalfapro@gmail.com">informesalfapro@gmail.com</a></li>
+        <li><a href="#">WhatsApp</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">Facebook</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 Alfapro Ecuador — Todos los derechos reservados</span>
+    <span class="footer-badge">Ecuador</span>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toastMsg">Agregado al carrito</span></div>
+
+<script>
+  // Cart
+  let cart = parseInt(localStorage.getItem('alfapro_cart') || '0');
+  document.getElementById('cartCount').textContent = cart;
+
+  function addToCart(name, price) {
+    cart++;
+    localStorage.setItem('alfapro_cart', cart);
+    document.getElementById('cartCount').textContent = cart;
+    showToast(name + ' — $' + price + ' agregado');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3200);
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
